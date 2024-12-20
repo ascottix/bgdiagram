@@ -1,0 +1,57 @@
+/* BgDiagram theme inspired by nature colors */
+.bgdiagram__theme--nature {
+    .bgdiagram__board {
+        fill: #62a544;
+    }
+
+    .bgdiagram__board-frame {
+        fill: #8e6233;
+        stroke: #60391a;
+        stroke-width: 4px;
+    }
+
+    .bgdiagram__board-frame--nofill {
+        fill: none;
+    }
+
+    .bgdiagram__checker--white {
+        fill: #ece8e5;
+    }
+
+    .bgdiagram__checker--black {
+        fill: #211f2c;
+    }
+
+    .bgdiagram__cube {
+        fill: white;
+        stroke: black;
+        stroke-width: 3px;
+    }
+
+    .bgdiagram__dice {
+        fill: white;
+        stroke: #211f2c;
+    }
+
+    .bgdiagram__dice-dot {
+        fill: #211f2c;
+    }
+
+    .bgdiagram__point--black {
+        fill: #323434;
+        stroke: #211f2c;
+    }
+
+    .bgdiagram__point--white {
+        fill: #e5e2dd;
+        stroke: #323434;
+    }
+
+    .bgdiagram__text--offboard,
+    .bgdiagram__text--score,
+    .bgdiagram__text--pipcount {
+        fill: white;
+        stroke: #60391a;
+        stroke-width: 1px;
+    }
+}

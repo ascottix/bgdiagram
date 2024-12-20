@@ -21,26 +21,23 @@ function BgDiagramBuilder(scale = 1) {
     const fullBoardHeight = boardHeight + 2 * BorderWidth + textAreaHeight * 2;
     const viewAreaWidth = fullBoardWidth + BorderWidth * 2;
 
-    const html = [];
+    const svg = [];
 
+    // Create a CSS class in BEM (more or less) notation
     const BemMain = 'bgdiagram';
 
-    function bem(block, mod) {
-        if (typeof mod == 'number') {
-            mod = (mod == White) ? 'white' : 'black';
+    function bem(block, modifiers) {
+        if (typeof modifiers == 'number') {
+            modifiers = (modifiers == White) ? 'white' : 'black';
         }
 
-        return `${BemMain}__${block}` + (mod ? ` ${BemMain}__${block}--${mod}` : '');
+        return `${BemMain}__${block}` + (modifiers ? modifiers.split(' ').map(m => ` ${BemMain}__${block}--${m}`).join(' ') : '');
     }
 
-    function rect(x, y, w, h, c) {
-        html.push(`<rect x="${x}" y="${y}" width="${w}" height="${h}" class="${c || bem('board-frame')}"/>`);
+    // Add to the SVG buffer
+    function addSvg(fragment) {
+        svg.push(fragment);
     }
-
-    function text(x, y, text, mod) {
-        html.push(`<text x="${x}" y="${y}" class="${bem('text', mod)}">${text}</text>`);
-    }
-
 
     // Draw a board point at the specified position
     function drawPoint(pos) {
@@ -50,21 +47,39 @@ function BgDiagramBuilder(scale = 1) {
         const sy = edge * pointGap / 2;
         const ey = sy + edge * (pointHeight - 1);
 
-        html.push(`<polygon id="point" points="${x},${ey} ${x + CheckerSize},${ey} ${x + CheckerSize / 2},${sy}" class="${bem('point', pos % 2)}" />`);
+        addSvg(`<polygon id="point" points="${x},${ey} ${x + CheckerSize},${ey} ${x + CheckerSize / 2},${sy}" class="${bem('point', pos % 2)}" />`);
 
-        text(x + CheckerSize / 2, ey + edge * CheckerSize * 0.3, pos, 'point');
+        addText(x + CheckerSize / 2, ey + edge * CheckerSize * 0.3, pos, 'point');
     }
 
     // Draw an empty board
     function drawEmptyBoard() {
-        rect(-fullBoardWidth / 2, -boardHeight / 2, fullBoardWidth, boardHeight, bem('board')); // Full board
-        rect(-barWidth / 2, -boardHeight / 2, barWidth, boardHeight); // Bar
-        rect(-fullBoardWidth / 2, -boardHeight / 2, sideWidth, boardHeight); // Left side
-        rect(fullBoardWidth / 2 - sideWidth, -boardHeight / 2, sideWidth, boardHeight); // Right side
+        const hx = fullBoardWidth / 2;
+        const hy = -boardHeight / 2;
 
+        // Playing area
+        addSvg(`<rect x="${-hx}" y="${hy}" width="${fullBoardWidth}" height="${boardHeight}" class="${bem('board')}"/>`); // Full board
+
+        // Points
         for (let p = 1; p <= 24; p++) {
             drawPoint(p);
         }
+
+        // Board frame
+        function frame(x, y, w, mod) {
+            addSvg(`<rect x="${x}" y="${y}" width="${w}" height="${boardHeight}" class="${bem('board-frame', mod)}"/>`);
+        }
+
+        frame(-barWidth / 2, hy, barWidth); // Bar
+        frame(-hx, hy, sideWidth); // Left side
+        frame(hx - sideWidth, hy, sideWidth); // Right side
+
+        frame(-hx, hy, fullBoardWidth, 'nofill');
+    }
+
+    // Add text to specified position
+    function addText(x, y, text, mod) {
+        addSvg(`<text x="${x}" y="${y}" class="${bem('text', mod)}">${text}</text>`);
     }
 
     // Add checker to specific point (0 or 25 is the bar)
@@ -88,11 +103,11 @@ function BgDiagramBuilder(scale = 1) {
         for (let c = 0; c < count; c++) {
             const cy = ey - c * edge * CheckerSize;
 
-            html.push(`<circle cx="${cx}" cy="${cy}" r="${CheckerSize / 2 - BorderWidth / 2}" class="${bem('checker', player)}" />`);
+            addSvg(`<circle cx="${cx}" cy="${cy}" r="${CheckerSize / 2 - BorderWidth / 2}" class="${bem('checker', player)}" />`);
 
             // If too many checkers, show count and exit
             if (c == (maxcount - 1) && count > maxcount) {
-                text(cx, cy, count, player);
+                addText(cx, cy, count, player);
                 break;
             }
         }
@@ -104,11 +119,11 @@ function BgDiagramBuilder(scale = 1) {
         const hsize = CheckerSize * 0.4;
 
         // Draw an empty dice
-        html.push(`<rect x="${cx - hsize}" y="${-hsize}" width="${hsize * 2}" height="${hsize * 2}" ry="${BorderWidth * 3}" class="${bem('dice')}"/>`);
+        addSvg(`<rect x="${cx - hsize}" y="${-hsize}" width="${hsize * 2}" height="${hsize * 2}" ry="${BorderWidth * 3}" class="${bem('dice')}"/>`);
 
         // Draw the dice dots
         function dot(x, y) {
-            html.push(`<circle cx="${cx + x * 10}" cy="${y * 10}" r="${CheckerSize / 12}" class="${bem('dice-dot')}" />`);
+            addSvg(`<circle cx="${cx + x * 10}" cy="${y * 10}" r="${CheckerSize / 12}" class="${bem('dice-dot')}" />`);
         }
 
         (value & 1) && dot(0, 0);
@@ -117,8 +132,8 @@ function BgDiagramBuilder(scale = 1) {
         (value == 6) && dot(-1, 0) | dot(1, 0);
     }
 
-    // Add boreoff checkers
-    function addOffCheckers(player, count) {
+    // Add checkers that have been removed from the board
+    function addCheckersOffboard(player, count) {
         const x = boardWidth + barWidth + BorderWidth / 2;
         const y = player * pointHeight;
         const hsize = CheckerSize * 0.45;
@@ -126,10 +141,10 @@ function BgDiagramBuilder(scale = 1) {
         const vstep = vsize * 2 + 4;
 
         for (let i = 0; i < count; i++) {
-            html.push(`<rect x="${x - hsize}" y="${y - player * (i - 1) * vstep - vsize}" width="${hsize * 2}" height="${vsize * 2}" ry="3" class="${bem('checker', player)}"/>`);
+            addSvg(`<rect x="${x - hsize}" y="${y - player * (i - 1) * vstep - vsize}" width="${hsize * 2}" height="${vsize * 2}" ry="3" class="${bem('checker', player)}"/>`);
         }
 
-        count && html.push(`<text x="${x}" y="${y - player * count * vstep}" class="${bem('text')}">${count}</text>`);
+        count && addSvg(`<text x="${x}" y="${y - player * count * vstep}" class="${bem('text', 'offboard')}">${count}</text>`);
     }
 
     // Add the cube
@@ -138,22 +153,21 @@ function BgDiagramBuilder(scale = 1) {
         const cx = -(boardWidth + barWidth + BorderWidth / 2);
         const cy = player * (pointHeight - CheckerSize * 0.3 - size);
 
-        html.push(`<rect x="${cx - size}" y="${cy - size}" width="${size * 2}" height="${size * 2}" ry="4" class="${bem('cube')}"/>`);
-        text(cx, cy, value);
+        addSvg(`<rect x="${cx - size}" y="${cy - size}" width="${size * 2}" height="${size * 2}" ry="4" class="${bem('cube')}"/>`);
+        addText(cx, cy, value);
     }
 
     // Add a player score
     function addScore(player, score, matchlen) {
-        const mod = (matchlen > 10) && 'small';
         const x = -(boardWidth + barWidth + BorderWidth / 2);
         const y = player * (pointHeight + CheckerSize * 0.2);
 
-        text(x, y, `${score}/${matchlen}`, mod);
+        addText(x, y, `${score}/${matchlen}`, `score${(matchlen > 10) ? ' small' : ''}`);
     }
 
     // Add the pips count
     function addPipsCount(player, count) {
-        text(0, player * (pointHeight + CheckerSize * 0.2), count);
+        addText(0, player * (pointHeight + CheckerSize * 0.2), count, 'pipcount');
     }
 
     // Add an indicator to show which player is to play
@@ -162,33 +176,43 @@ function BgDiagramBuilder(scale = 1) {
         const x = boardWidth + barWidth + BorderWidth / 2;
         const y = player * (boardHeight / 2 + BorderWidth * 2 + r);
 
-        html.push(`<circle cx="${x}" cy="${y}" r="${r}" class="${bem('checker', player)}" />`);
+        addSvg(`<circle cx="${x}" cy="${y}" r="${r}" class="${bem('checker', player)}" />`);
     }
 
     // Close the board and return the generated SVG
     function close() {
-        html.push(`</svg>`);
+        addSvg(`</svg>`);
 
-        return html.join('');
+        return svg.join('');
+    }
+
+    // Reset the builder to the initial state
+    function reset() {
+        svg.length = 0;
+
+        addSvg(`<svg width="${viewAreaWidth * scale}" height="${fullBoardHeight * scale}" viewBox="${-viewAreaWidth / 2} ${-fullBoardHeight / 2} ${viewAreaWidth} ${fullBoardHeight}" class="${BemMain}">`);
+
+        drawEmptyBoard();
     }
 
     // Initialize
-    html.push(`<svg width="${viewAreaWidth * scale}" height="${fullBoardHeight * scale}" viewBox="${-viewAreaWidth / 2} ${-fullBoardHeight / 2} ${viewAreaWidth} ${fullBoardHeight}" class="bgdiagram">`);
-
-    drawEmptyBoard();
+    reset();
 
     // Return builder interface
     return Object.freeze({
         White,
         Black,
         addCheckers,
+        addCheckersOffboard,
         addCube,
         addDice,
-        addOffCheckers,
         addPipsCount,
         addPlayerOnTurnIndicator,
         addScore,
-        close
+        addSvg,
+        addText,
+        close,
+        reset
     });
 }
 
@@ -231,8 +255,8 @@ class BgDiagram {
             }
         }
 
-        bgb.addOffCheckers(White, 15 - checkers[White]);
-        bgb.addOffCheckers(Black, 15 - checkers[Black]);
+        bgb.addCheckersOffboard(White, 15 - checkers[White]);
+        bgb.addCheckersOffboard(Black, 15 - checkers[Black]);
 
         bgb.addPipsCount(White, pips[White]);
         bgb.addPipsCount(Black, checkers[Black] * 25 - pips[Black]);
