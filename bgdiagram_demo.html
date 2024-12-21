@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BgDiagram demo gallery</title>
+    <link rel="stylesheet" href="bgdiagram.css">
+    <link rel="stylesheet" href="bgdiagram_theme_marina.css">
+    <link rel="stylesheet" href="bgdiagram_theme_mountain.css">
+    <style>
+        body {
+            background-color: lightgray;
+            font-family: sans-serif;
+        }
+
+        #xgid {
+            width: 25em;
+        }
+
+        #board {
+            margin-top: 1em;
+            text-align: center;
+        }
+    </style>
+    <script src="bgdiagram.js"></script>
+    <script>
+        function scaleChanged(slider) {
+            document.getElementById('board').style.transform = `scale(${slider.value / 100})`;
+        }
+
+        function themeChanged(select) {
+            // Refresh SVG
+            const xgid = document.getElementById('xgid');
+            xgidChanged(xgid);
+
+            document.getElementById('board').className = select.value;
+        }
+
+        function positionChanged(select) {
+            const xgid = document.getElementById('xgid');
+            xgid.value = select.value;
+            xgidChanged(xgid);
+        }
+
+        function xgidChanged(input) {
+            document.getElementById('board').innerHTML = BgDiagram.fromXgid(input.value);
+        }
+
+        function inlineStyles(svgElement) {
+            const styles = window.getComputedStyle(svgElement);
+            const elements = svgElement.querySelectorAll('*');
+
+            elements.forEach(element => {
+                const computedStyles = window.getComputedStyle(element);
+                for (let property of computedStyles) {
+                    element.style[property] = computedStyles.getPropertyValue(property);
+                }
+            });
+        }
+
+        function downloadImage(toClipboard) {
+            const svgElement = document.getElementById('board').querySelector('svg');
+
+            // Inline the CSS styles
+            inlineStyles(svgElement);
+
+            const serializer = new XMLSerializer();
+            const svgString = serializer.serializeToString(svgElement);
+
+            // Create a Blob from the SVG string
+            const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+            const url = URL.createObjectURL(svgBlob);
+
+            // Create an image and draw it on a canvas
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = svgElement.clientWidth;
+                canvas.height = svgElement.clientHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+
+                // Copy to clipboard
+                if (toClipboard) {
+                    canvas.toBlob(async (blob) => {
+                        if (blob) {
+                            const item = new ClipboardItem({ "image/png": blob });
+                            await navigator.clipboard.write([item]);
+                        } else {
+                            alert('Could not create PNG');
+                        }
+                    }, "image/png");
+                }
+
+                URL.revokeObjectURL(url);
+
+                // Convert canvas to PNG and trigger download
+                if (!toClipboard) {
+                    const pngUrl = canvas.toDataURL("image/png");
+                    const link = document.createElement('a');
+                    link.href = pngUrl;
+                    link.download = 'bgdiagram.png';
+                    link.click();
+                }
+            };
+            img.src = url;
+        }
+    </script>
+</head>
+
+<body>
+    <div>
+        <!-- Controls -->
+        <label for="scale">Scale:</label>
+        <input id="scale" type="range" min="40" max="100" value="100" oninput="scaleChanged(this)">
+        <label for="theme">Theme:</label>
+        <select id="theme" oninput="themeChanged(this)">
+            <option value="">Black & white</option>
+            <option value="bgdiagram__theme--marina">Marina</option>
+            <option value="bgdiagram__theme--mountain">Mountain</option>
+        </select>
+        <label for="position">Position:</label>
+        <select id="position" oninput="positionChanged(this)">
+            <option value="XGID=-b----E-C---eE---c-e----B-:0:0:1:00:0:0:0:0:10">Start position</option>
+            <option value="XGID=-a-a--E-D---dD---d-e---AA-:0:0:-1:42:0:2:0:7:10">Make the 5 or 4?</option>
+            <option value="XGID=a-a--BCAB--BeB----ce-A--B-:0:0:-1:00:0:0:0:5:10">Is this a cube?</option>
+            <option value="XGID=-a---BC-C--AeD---cae----AA:0:0:1:42:0:0:0:0:10">What's the best move?</option>
+            <option value="XGID=ab----D-C---cD---c-d----AB:0:0:1:52:3:2:0:7:10">Little bit of everything</option>
+        </select>
+        <label for="xgid">XGID:</label>
+        <input id="xgid" oninput="xgidChanged(this)"></input>
+        <input type="button" value="Download image" onclick="downloadImage(false)"></input>
+        <input type="button" value="Copy to clipboard" onclick="downloadImage(true)"></input>
+
+        <!-- Link to GitHub -->
+        <div style="float:right"><a href="https://github.com/ascottix/bgdiagram">GitHub</a></div>
+
+        <!-- Board container -->
+        <div id="board"></div>
+
+        <script>
+            positionChanged(document.getElementById('position'));
+        </script>
+</body>
+
+</html>

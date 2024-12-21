@@ -6,7 +6,9 @@
 const CheckerSize = 50;
 const BorderWidth = 2;
 
-function BgDiagramBuilder(scale = 1) {
+function BgDiagramBuilder(options) {
+    options = options || {};
+
     const White = +1;
     const Black = -1;
 
@@ -96,14 +98,14 @@ function BgDiagramBuilder(scale = 1) {
             edge = (point <= 12) ? 1 : -1; // Bottom or top edge
             cx = (point <= 12 ? 6 - point : point - 19) * CheckerSize + side * (barWidth / 2 + BorderWidth) + CheckerSize / 2;
             ey = edge * (pointHeight - 1 - BorderWidth / 2);
-            maxcount++;
+            maxcount = 5;
         }
 
         // Draw the checker stack
         for (let c = 0; c < count; c++) {
             const cy = ey - c * edge * CheckerSize;
 
-            addSvg(`<circle cx="${cx}" cy="${cy}" r="${CheckerSize / 2 - BorderWidth / 2}" class="${bem('checker', player)}" />`);
+            addSvg(`<circle cx="${cx}" cy="${cy}" r="${CheckerSize / 2 - BorderWidth / 2 - 0.25}" class="${bem('checker', player)}" />`);
 
             // If too many checkers, show count and exit
             if (c == (maxcount - 1) && count > maxcount) {
@@ -114,16 +116,16 @@ function BgDiagramBuilder(scale = 1) {
     }
 
     // Add a dice to the board, the position range is -2 (closest to the bar) to 3
-    function addDice(value, pos) {
-        const cx = (CheckerSize * 2.5 + barWidth / 2 + pos * CheckerSize + BorderWidth);
+    function addDice(player, value, pos) {
+        const cx = player * (CheckerSize * 2.5 + barWidth / 2 + pos * CheckerSize + BorderWidth);
         const hsize = CheckerSize * 0.4;
 
         // Draw an empty dice
-        addSvg(`<rect x="${cx - hsize}" y="${-hsize}" width="${hsize * 2}" height="${hsize * 2}" ry="${BorderWidth * 3}" class="${bem('dice')}"/>`);
+        addSvg(`<rect x="${cx - hsize}" y="${-hsize}" width="${hsize * 2}" height="${hsize * 2}" ry="${BorderWidth * 3}" class="${bem('dice', player)}"/>`);
 
         // Draw the dice dots
         function dot(x, y) {
-            addSvg(`<circle cx="${cx + x * 10}" cy="${y * 10}" r="${CheckerSize / 12}" class="${bem('dice-dot')}" />`);
+            addSvg(`<circle cx="${cx + x * 10}" cy="${y * 10}" r="${CheckerSize / 12}" class="${bem('dice-dot', player)}" />`);
         }
 
         (value & 1) && dot(0, 0);
@@ -150,7 +152,7 @@ function BgDiagramBuilder(scale = 1) {
     // Add the cube
     function addCube(player, value) {
         const size = Math.round(CheckerSize * 0.4);
-        const cx = -(boardWidth + barWidth + BorderWidth / 2);
+        const cx = -(boardWidth + barWidth + BorderWidth / 2 + 0.5);
         const cy = player * (pointHeight - CheckerSize * 0.3 - size);
 
         addSvg(`<rect x="${cx - size}" y="${cy - size}" width="${size * 2}" height="${size * 2}" ry="4" class="${bem('cube')}"/>`);
@@ -188,6 +190,8 @@ function BgDiagramBuilder(scale = 1) {
 
     // Reset the builder to the initial state
     function reset() {
+        const scale = options.scale || 1;
+
         svg.length = 0;
 
         addSvg(`<svg width="${viewAreaWidth * scale}" height="${fullBoardHeight * scale}" viewBox="${-viewAreaWidth / 2} ${-fullBoardHeight / 2} ${viewAreaWidth} ${fullBoardHeight}" class="${BemMain}">`);
@@ -217,12 +221,12 @@ function BgDiagramBuilder(scale = 1) {
 }
 
 class BgDiagram {
-    static newBuilder() {
-        return BgDiagramBuilder();
+    static newBuilder(options) {
+        return BgDiagramBuilder(options);
     }
 
-    static fromXgid(xgid) {
-        const bgb = BgDiagramBuilder();
+    static fromXgid(xgid, options) {
+        const bgb = BgDiagramBuilder(options);
 
         const White = bgb.White;
         const Black = bgb.Black;
@@ -268,14 +272,16 @@ class BgDiagram {
         bgb.addCube(cubePosition, 1 << cubeValue);
 
         // Turn
-        bgb.addPlayerOnTurnIndicator(token[3]);
+        const player = token[3];
+
+        bgb.addPlayerOnTurnIndicator(player);
 
         // Dice
         const diceValue = token[4];
 
         if (diceValue >= 11 && diceValue <= 66) {
-            bgb.addDice(Math.floor(diceValue / 10), 0);
-            bgb.addDice(diceValue % 10, 1);
+            bgb.addDice(player, Math.floor(diceValue / 10), 0);
+            bgb.addDice(player, diceValue % 10, 1);
         }
 
         // Match information
