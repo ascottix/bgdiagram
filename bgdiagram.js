@@ -25,17 +25,21 @@ function BgDiagramBuilder(options) {
     const fullBoardWidth = 2 * sideWidth + 2 * boardWidth + barWidth + 2;
     const fullBoardHeight = boardHeight + 2 * BorderWidth + textAreaHeight * 2;
     const viewAreaWidth = fullBoardWidth + BorderWidth * 2;
-    let centerBearoffSide = boardWidth + barWidth + BorderWidth / 2;
-    let centerCubeSide = -centerBearoffSide;
+    const centerBearoffSide = boardWidth + barWidth + BorderWidth / 2;
+    const centerCubeSide = -centerBearoffSide;
 
     const svg = [];
 
     // Create a CSS class in BEM (more or less) notation
     const BemMain = 'bgdiagram';
 
+    function getPlayerClass(player) {
+        return (player == White) ? 'white' : 'black';
+    }
+
     function bem(block, modifiers) {
         if (typeof modifiers == 'number') {
-            modifiers = (modifiers == White) ? 'white' : 'black';
+            modifiers = getPlayerClass(modifiers);
         }
 
         return `${BemMain}__${block}` + (modifiers ? modifiers.split(' ').map(m => ` ${BemMain}__${block}--${m}`).join(' ') : '');
@@ -51,8 +55,10 @@ function BgDiagramBuilder(options) {
 
     // Return the coordinates of the center for the checker at the specified position:
     // - 1 to 24 are the standard points
-    // - PosBarXxx is the bar for player Xxx
-    // - PosOffXxx is the (borne) off place for player Xxx
+    // - 0 is White's bar
+    // - 25 is Black's bar
+    // - PosOffWhite is the (borne) off place for White
+    // - PosOffBlack is the (borne) off place for Black
     function getCheckerCenter(pos, height) {
         let cx = 0;
         let cy0 = pointHeight - 1 - BorderWidth / 2;
@@ -171,17 +177,18 @@ function BgDiagramBuilder(options) {
 
     // Add checker to specific point (0 or 25 is the bar)
     function addCheckers(player, point, count) {
+        const CheckerClass = 'checker';
         const maxcount = point % 25 ? 5 : 4; // One less checker when on bar
 
         // Draw the checker stack
         for (let c = 0; c < count; c++) {
             const [cx, cy] = getCheckerCenter(point, c);
 
-            addSvg(`<circle cx="${cx}" cy="${cy}" r="${CheckerSize / 2 - BorderWidth / 2 - 0.25}" class="${bem('checker', player)}" />`);
+            addSvg(`<circle cx="${cx}" cy="${cy}" r="${CheckerSize / 2 - BorderWidth / 2 - 0.25}" class="${bem(CheckerClass, player)}" />`);
 
             // If too many checkers, show count and exit
             if (c == (maxcount - 1) && count > maxcount) {
-                addText(cx, cy, count, player);
+                addText(cx, cy, count, CheckerClass + '--' + getPlayerClass(player));
                 break;
             }
         }
@@ -236,12 +243,12 @@ function BgDiagramBuilder(options) {
         const x = -(boardWidth + barWidth + BorderWidth / 2);
         const y = player * (pointHeight + CheckerSize * 0.2);
 
-        addText(x, y, `${score}/${matchlen}`, `score${(matchlen > 10) ? ' small' : ''}`);
+        addText(x, y, `${score}/${matchlen}`, `${getPlayerClass(player)} score${(matchlen > 10) ? ' small' : ''}`);
     }
 
     // Add the pips count
     function addPipsCount(player, count) {
-        addText(0, player * (pointHeight + CheckerSize * 0.2), count, 'pipcount');
+        addText(0, player * (pointHeight + CheckerSize * 0.2), count, `pipcount ${getPlayerClass(player)}`);
     }
 
     // Add an indicator to show which player is to play
@@ -397,8 +404,8 @@ class BgDiagram {
                         .split('/')
                         .map(m => m < 0 ? m : player == White ? parseInt(m) : 25 - parseInt(m));
 
-                    const crossover = from >= 1 && from <= 24 && to >= 1 && to <= 24 && ((to <= 12 && from >= 13)||(to >= 13 && from <= 12));
-                    const fromHeight = point[from] * player + (crossover ? -1 : i*2 -repeat); // Try to avoid crossing arrows
+                    const crossover = from >= 1 && from <= 24 && to >= 1 && to <= 24 && Math.sign(to - 12) != Math.sign(from - 12);
+                    const fromHeight = point[from] * player + (crossover ? -1 : i * 2 - repeat); // Try to avoid crossing arrows
 
                     if (to < 0) {
                         // Bearoff
@@ -430,4 +437,8 @@ class BgDiagram {
         // Return SVG
         return bgb.close();
     }
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = BgDiagram; // Export for Node.js
 }

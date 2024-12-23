@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="bgdiagram.css">
     <link rel="stylesheet" href="bgdiagram_theme_marina.css">
     <link rel="stylesheet" href="bgdiagram_theme_mountain.css">
+    <link rel="stylesheet" href="bgdiagram_theme_patriot.css">
     <style>
         body {
             background-color: lightgray;
@@ -25,26 +26,31 @@
     </style>
     <script src="bgdiagram.js"></script>
     <script>
+        function board() {
+            return document.getElementById('board');
+        }
+
         function scaleChanged(slider) {
-            document.getElementById('board').style.transform = `scale(${slider.value / 100})`;
+            board().style.transform = `scale(${slider.value / 100})`;
         }
 
         function themeChanged(select) {
-            // Refresh SVG
-            const xgid = document.getElementById('xgid');
-            xgidChanged(xgid);
+            // Refresh SVG (downloading an image destroys the SVG CSS, so themes won't work)
+            xgidChanged();
 
-            document.getElementById('board').className = select.value;
+            board().className = select.value;
         }
 
-        function positionChanged(select) {
+        function positionChanged() {
+            const select = document.getElementById('position');
             const xgid = document.getElementById('xgid');
             xgid.value = select.value;
-            xgidChanged(xgid);
+            xgidChanged();
         }
 
-        function xgidChanged(input) {
-            document.getElementById('board').innerHTML = BgDiagram.fromXgid(input.value);
+        function xgidChanged() {
+            const input = document.getElementById('xgid');
+            board().innerHTML = BgDiagram.fromXgid(input.value);
         }
 
         function inlineStyles(svgElement) {
@@ -60,10 +66,9 @@
         }
 
         function downloadImage(toClipboard) {
-            const svgElement = document.getElementById('board').querySelector('svg');
+            const svgElement = board().querySelector('svg');
 
-            // Inline the CSS styles
-            inlineStyles(svgElement);
+            inlineStyles(svgElement); // Inline the CSS styles
 
             const serializer = new XMLSerializer();
             const svgString = serializer.serializeToString(svgElement);
@@ -113,37 +118,40 @@
     <div>
         <!-- Controls -->
         <label for="scale">Scale:</label>
-        <input id="scale" type="range" min="40" max="100" value="100" oninput="scaleChanged(this)">
+        <input id="scale" type="range" min="40" max="100" value="100" oninput="scaleChanged(this)" aria-label="Zoom the image in or out">
         <label for="theme">Theme:</label>
-        <select id="theme" oninput="themeChanged(this)">
+        <select id="theme" oninput="themeChanged(this)" aria-label="Select a theme to change the visual appearance of the board">
             <option value="">Black & white</option>
             <option value="bgdiagram__theme--marina" selected>Marina</option>
             <option value="bgdiagram__theme--mountain">Mountain</option>
+            <option value="bgdiagram__theme--patriot">Patriot</option>
         </select>
         <label for="position">Position:</label>
-        <select id="position" oninput="positionChanged(this)">
+        <select id="position" oninput="positionChanged()">
             <option value="XGID=-b----E-C---eE---c-e----B-:0:0:1:00:0:0:0:0:10">Start position</option>
             <option value="XGID=-a-a--E-D---dD---d-e---AA-:0:0:-1:42:0:2:0:7:10">Make the 5 or 4?</option>
             <option value="XGID=a-a--BCAB--BeB----ce-A--B-:0:0:-1:00:0:0:0:5:10">Is this a cube?</option>
             <option value="XGID=-a---BC-C--AeD---cae----AA:0:0:1:42:0:0:0:0:10">What's the best move?</option>
-            <option value="XGID=-CCCBBA-A------------acac-:1:1:1:63:1:2:0:5:10:8/5,6/off!!">Little bit of everything</option>
+            <option value="XGID=-CCCBBA-A------------acac-:1:1:1:63:1:2:0:5:10:8/5,6/off!!">Little bit of everything
+            </option>
             <option value="XGID=-A----------------------d-:0:0:-1:11:0:0:0:0:10:1/off(4)">So close...</option>
-            <option value="XGID=-a-aB-C-C--BcCa--d-e----B-:0:0:1:33:2:4:1:5:10:24/21(2),21/18(2)??">How a blunder looks like</option>
+            <option value="XGID=-a-aB-C-C--BcCa--d-e----B-:0:0:1:33:2:4:1:5:10:24/21(2),21/18(2)??">A blunder</option>
         </select>
         <label for="xgid">XGID:</label>
-        <input id="xgid" oninput="xgidChanged(this)"></input>
-        <input type="button" value="Download image" onclick="downloadImage(false)"></input>
-        <input type="button" value="Copy to clipboard" onclick="downloadImage(true)"></input>
+        <input id="xgid" oninput="xgidChanged()" aria-label="XGID (extremeGammon ID) of backgammon position"></input>
+        <input type="button" value="Download image" onclick="downloadImage(false)" aria-label="Download the board as an image"></input>
+        <input type="button" value="Copy to clipboard" onclick="downloadImage(true)" aria-label="Copy the image to clipboard"></input>
 
         <!-- Link to GitHub -->
         <div style="float:right"><a href="https://github.com/ascottix/bgdiagram">GitHub</a></div>
+    </div>
 
-        <!-- Board container -->
-        <div id="board" class="bgdiagram__theme--marina"></div>
+    <!-- Board container -->
+    <div id="board" class="bgdiagram__theme--marina"></div>
 
-        <script>
-            positionChanged(document.getElementById('position'));
-        </script>
+    <script>
+        positionChanged();
+    </script>
 </body>
 
 </html>
