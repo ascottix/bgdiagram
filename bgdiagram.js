@@ -59,9 +59,8 @@ function BgDiagramBuilder(options) {
         let edge; // Top or bottom
 
         if (pos < 0) {
-            cx = centerBearoffSide;
+            cx = centerBearoffSide - 10;
             edge = (pos == PosOffBlack) ? -1 : +1;
-            cy0 = 0;
         }
         else if (pos % 25 == 0) {
             // Bar
@@ -85,20 +84,24 @@ function BgDiagramBuilder(options) {
     }
 
     // Draw an arrow between two points
-    function drawArrow(x1, y1, x2, y2, lineWidth = 10, headWidth = 25, headLength = 20) {
+    function drawArrow(x1, y1, x2, y2, mod) {
+        const LineWidth = CheckerSize * 0.2;
+        const HeadWidth = CheckerSize * 0.5;
+        const HeadLength = CheckerSize * 0.4;
+
         const dx = x2 - x1;
         const dy = y2 - y1;
         const angle = Math.atan2(dy, dx);
 
         // Head base
-        const arrowBaseX = x2 - headLength * Math.cos(angle);
-        const arrowBaseY = y2 - headLength * Math.sin(angle);
+        const arrowBaseX = x2 - HeadLength * Math.cos(angle);
+        const arrowBaseY = y2 - HeadLength * Math.sin(angle);
 
         // Head and line offsets
-        const lineOffsetX = (lineWidth / 2) * Math.sin(angle);
-        const lineOffsetY = (lineWidth / 2) * -Math.cos(angle);
-        const headOffsetX = (headWidth / 2) * Math.sin(angle);
-        const headOffsetY = (headWidth / 2) * -Math.cos(angle);
+        const lineOffsetX = (LineWidth / 2) * Math.sin(angle);
+        const lineOffsetY = (LineWidth / 2) * -Math.cos(angle);
+        const headOffsetX = (HeadWidth / 2) * Math.sin(angle);
+        const headOffsetY = (HeadWidth / 2) * -Math.cos(angle);
 
         // Build arrow
         const points = [
@@ -112,7 +115,7 @@ function BgDiagramBuilder(options) {
         ].map(point => point.join(',')).join(' ');
 
         // Crea il poligono della freccia
-        addSvg(`<polygon points="${points}" class="${bem('arrow')}" />`);
+        addSvg(`<polygon points="${points}" class="${bem('arrow', mod)}" />`);
     }
 
     // Draw a board point at the specified position
@@ -159,11 +162,11 @@ function BgDiagramBuilder(options) {
     }
 
     // Add an arrow
-    function addArrow(point1, height1, point2, height2) {
+    function addArrow(point1, height1, point2, height2, mod) {
         const [cx1, cy1] = getCheckerCenter(point1, height1);
         const [cx2, cy2] = getCheckerCenter(point2, height2);
 
-        drawArrow(cx1, cy1, cx2, cy2);
+        drawArrow(cx1, cy1, cx2, cy2, mod);
     }
 
     // Add checker to specific point (0 or 25 is the bar)
@@ -300,14 +303,13 @@ class BgDiagram {
     static fromXgid(xgid, options) {
         // xgid = 'XGID=-b----E-C---eE---c-e----B-:0:0:-1:52:0:0:0:5:10:24/22, 13/8';
         // xgid = 'XGID=-a-a--E-C---dE---d-e----B-:0:0:1:54:0:0:0:5:10:24/20, 13/8';
-        // xgid = 'XGID=-a-a--E-D---dD---d-eA---A-:0:0:-1:61:0:0:0:5:10:13/7,8/7'; // TODO: dice position
+        xgid = 'XGID=-a-a--E-D---dD---d-eA---A-:0:0:-1:61:0:0:0:5:10:13/7,8/7'; // TODO: dice position
         // xgid = 'XGID=-a-a--E-D---cD---cbeA---A-:0:0:1:32:0:0:0:5:10:6/3*,3/1*'; // TODO: freccia sovrapposta
         // xgid = 'XGID=bA----D-D---cD---cbeA---A-:0:0:-1:32:0:0:0:5:10:bar/23,bar/22';
         // xgid = 'XGID=-Aaa--D-D---cD---cbeA---A-:0:0:1:42:0:0:0:5:10:24/20,13/11';
         // xgid = 'XGID=-Aaa--D-D--AcC---cbeB-----:0:0:-1:31:0:0:0:5:10:23/22,6/3';
         // xgid = 'XGID=-A-b--D-D--AcC---cbdB-a---:0:0:1:62:0:0:0:5:10:13/5'; // TODO: è due mosse in una
         // xgid = 'XGID=-A-b-AD-D--AcB---cbdB-a---:0:0:-1:42:0:0:0:5:10:22/20*,7/3';
-        // xgid = 'XGID=-A-a-aD-D--AcB---cadB-b--A:0:0:1:32:0:0:0:5:10:bar/23,8/5*'; // freccia sopra i dadi
         // xgid = 'XGID=-A-a-aD-D--AcB---cadB-b--A:0:0:1:32:0:0:0:5:10:bar/23,8/5*'; // freccia sopra i dadi
         // xgid = 'XGID=aA-a-AD-C--AcB---cadB-bA--:0:0:-1:61:0:0:0:5:10:bar/24*,8/2*';
         // xgid = 'XGID=-a-a-AD-C--AcB---badB-ba-B:0:0:1:21:0:0:0:5:10:bar/24,bar/23*';
@@ -340,13 +342,15 @@ class BgDiagram {
         // xgid = 'XGID=-BCBBBB-------A----cadcAd-:1:1:-1:51:0:0:0:5:10:5/off,1/off';
         // xgid = 'XGID=-CBBBBC--------A----adc-e-:1:1:-1:54:0:0:0:5:10:5/off,4/off'; // TODO: decidere l'altezza
         // xgid = 'XGID=-CBBBBC-A------------cc-e-:1:1:-1:21:0:0:0:5:10:4/2,1/off';
-        // xgid = 'XGID=-CCCBBA-A------------bcad-:1:1:-1:61:0:0:0:5:10:1/off,4/off'; // altezza.. è proprio bruttino
+        // xgid = 'XGID=-CCCBBA-A------------bcad-:1:1:-1:61:0:0:0:5:10:4/off,1/off'; // altezza.. è proprio bruttino
         // xgid = 'XGID=-CCCBBA-A------------acac-:1:1:1:63:0:0:0:5:10:8/5,6/off';
         // xgid = 'XGID=-CCCBC---------------acac-:1:1:-1:43:0:0:0:5:10:4/0,3/0';
         // xgid = 'XGID=-CCCBC----------------bac-:1:1:1:43:0:0:0:5:10:4/0,3/0';
         // xgid = 'XGID=-CCBAC----------------bac-:1:1:-1:53:0:0:0:5:10:3/off(2)';
         // xgid = 'XGID=-CDBAA------------------b-:1:1:1:61:0:0:0:5:10:5/off,4/3';
         // xgid = 'XGID=-CDC--------------------b-:1:1:-1:21:0:0:0:5:10:1/off(2)';
+
+        // xgid = 'XGID=-A----------------------d-:0:0:-1:11:0:0:0:0:10:1/off(4)';
 
         const bgb = BgDiagramBuilder(options);
 
@@ -408,10 +412,10 @@ class BgDiagram {
             bgb.addScore(Black, token[6], matchLength);
         }
 
-        // Moves (not in the XGID specs)
+        // Moves (arrows)
         const movelist = xgid.split(':')[10];
         if (movelist) {
-            let off = 0;
+            let totaloff = 0; // Keep track of checkers that bear off
 
             const moves = movelist
                 .replace('/\*/g', '')
@@ -428,8 +432,10 @@ class BgDiagram {
                     move = move.substring(0, p);
                 }
 
+                let off = 0; // How many checkers bear off this move
+
                 // Apply the move(s)
-                while (repeat--) {
+                for(let i=0; i<repeat; i++) {
                     const [from, to] = move
                         .split('/')
                         .map(m => m < 0 ? m : player == White ? parseInt(m) : 25 - parseInt(m));
@@ -438,7 +444,8 @@ class BgDiagram {
 
                     if (to < 0) {
                         // Bearoff
-                        bgb.addArrow(from, fromHeight, to, off++);
+                        bgb.addArrow(from, fromHeight, to, totaloff+repeat-i-1); // This formula creates arrows that don't cross over
+                        off++;
                     } else {
                         // Standard move
                         if (point[to] * player < 0) { // Capture
@@ -452,6 +459,8 @@ class BgDiagram {
 
                     point[from] -= player; // One less checker on the starting point
                 }
+
+                totaloff += off; // Update the bearoff checkers count
             });
         }
 
