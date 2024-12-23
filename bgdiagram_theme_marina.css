@@ -63,4 +63,19 @@
         stroke: #60391a;
         stroke-width: 1px;
     }
+
+    .bgdiagram__arrow--best {
+        fill: lime;
+        stroke: black;
+    }
+
+    .bgdiagram__arrow--error {
+        fill: gold;
+        stroke: black;
+    }
+
+    .bgdiagram__arrow--blunder {
+        fill: red;
+        stroke: black;
+    }
 }

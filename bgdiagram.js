@@ -266,7 +266,7 @@ function BgDiagramBuilder(options) {
 
         svg.length = 0;
 
-        addSvg(`<svg width="${viewAreaWidth * scale}" height="${fullBoardHeight * scale}" viewBox="${-viewAreaWidth / 2} ${-fullBoardHeight / 2} ${viewAreaWidth} ${fullBoardHeight}" class="${BemMain}">`);
+        addSvg(`<svg width="${viewAreaWidth * scale}" height="${fullBoardHeight * scale}" viewBox="${-viewAreaWidth / 2} ${-fullBoardHeight / 2} ${viewAreaWidth} ${fullBoardHeight}" class="${BemMain}" role="img" aria-label="Diagram of a backgammon game position">`);
 
         drawEmptyBoard();
     }
@@ -301,57 +301,6 @@ class BgDiagram {
     }
 
     static fromXgid(xgid, options) {
-        // xgid = 'XGID=-b----E-C---eE---c-e----B-:0:0:-1:52:0:0:0:5:10:24/22, 13/8';
-        // xgid = 'XGID=-a-a--E-C---dE---d-e----B-:0:0:1:54:0:0:0:5:10:24/20, 13/8';
-        xgid = 'XGID=-a-a--E-D---dD---d-eA---A-:0:0:-1:61:0:0:0:5:10:13/7,8/7'; // TODO: dice position
-        // xgid = 'XGID=-a-a--E-D---cD---cbeA---A-:0:0:1:32:0:0:0:5:10:6/3*,3/1*'; // TODO: freccia sovrapposta
-        // xgid = 'XGID=bA----D-D---cD---cbeA---A-:0:0:-1:32:0:0:0:5:10:bar/23,bar/22';
-        // xgid = 'XGID=-Aaa--D-D---cD---cbeA---A-:0:0:1:42:0:0:0:5:10:24/20,13/11';
-        // xgid = 'XGID=-Aaa--D-D--AcC---cbeB-----:0:0:-1:31:0:0:0:5:10:23/22,6/3';
-        // xgid = 'XGID=-A-b--D-D--AcC---cbdB-a---:0:0:1:62:0:0:0:5:10:13/5'; // TODO: è due mosse in una
-        // xgid = 'XGID=-A-b-AD-D--AcB---cbdB-a---:0:0:-1:42:0:0:0:5:10:22/20*,7/3';
-        // xgid = 'XGID=-A-a-aD-D--AcB---cadB-b--A:0:0:1:32:0:0:0:5:10:bar/23,8/5*'; // freccia sopra i dadi
-        // xgid = 'XGID=aA-a-AD-C--AcB---cadB-bA--:0:0:-1:61:0:0:0:5:10:bar/24*,8/2*';
-        // xgid = 'XGID=-a-a-AD-C--AcB---badB-ba-B:0:0:1:21:0:0:0:5:10:bar/24,bar/23*';
-        // xgid = 'XGID=aa-a-AD-C--AcB---badB-bAA-:0:0:-1:51:0:0:0:5:10:bar/20*,7/6';
-        // xgid = 'XGID=-a-a-aD-C--AcB---b-eB-bAAA:0:0:1:62:0:0:0:5:10:bar/23,24/18';
-        // xgid = 'XGID=-a-a-aD-C--AcB---bAeB-bB--:0:0:-1:62:0:0:0:5:10:22/14*'; // due in una
-        // xgid = 'XGID=-a---aD-C--acB---bAeB-bB-A:0:0:1:43:0:0:0:5:10:bar/21,18/15';
-        // xgid = 'XGID=-a---aD-C--acB-A-b-eBAbB--:0:0:-1:54:0:0:0:5:10:24/20,13/8'; // freccia sui dadi
-        // xgid = 'XGID=-----bD-C--abB-A-c-eBAbB--:0:0:1:41:0:0:0:5:10:21/20,15/11*';
-        // xgid = 'XGID=a----bD-C--AbB---c-eC-bB--:0:0:-1:31:0:0:0:5:10:bar/21'; // 2 in 1
-        // xgid = 'XGID=----abD-C--AbB---c-eC-bB--:0:0:1:62:0:0:0:5:10:11/3'; // 2
-        // xgid = 'XGID=---AabD-C---bB---c-eC-bB--:0:0:-1:55:0:0:0:5:10:21/11,20/15(2)';
-        // xgid = 'XGID=---AabD-C---bB---c-eC-bB--:0:0:-1:55:0:0:0:5:10:21/16,16/11,20/15(2)'; // è quella di prima "espansa"
-        // xgid = 'XGID=---A--D-C-b-bBa--c-eC-bB--:0:0:1:54:0:0:0:5:10:8/3,6/2';
-        // xgid = 'XGID=--AB--C-B-b-bBa--c-eC-bB--:0:0:-1:61:0:0:0:5:10:11/4';
-        // xgid = 'XGID=--AB--C-B-b-bB---c-eCabB--:0:0:1:61:0:0:0:5:10:20/13';
-        // xgid = 'XGID=--AB--C-B-b-bC---c-eBabB--:0:0:-1:32:0:0:0:5:10:6/3,6/4';
-        // xgid = 'XGID=--ABA-B-C-b-bB---c-cBbcB--:0:0:-1:00:0:0:0:5:10'; // offerta di cubo
-        // xgid = 'XGID=--ABA-B-C-b-bB---c-cBbcB--:1:1:-1:00:0:0:0:5:10'; // cubo accettato
-        // xgid = 'XGID=--ABA-B-C-b-bB---c-cBbcB--:1:1:-1:33:0:0:0:5:10:13/7(2)';
-        // xgid = 'XGID=--ABA-B-C-b--B---cbcBbcB--:1:1:1:54:0:0:0:5:10:8/3,8/4';
-        // xgid = 'XGID=--ACB-B-A-b--B---cbcBbcB--:1:1:-1:52:0:0:0:5:10:6/1,3/1';
-        // xgid = 'XGID=--ACB-B-A-b--B---cbbBbbBb-:1:1:1:44:0:0:0:5:10:13/5(2)';
-        // xgid = 'XGID=--ACBBB-A-b------cbbBbbBb-:1:1:-1:32:0:0:0:5:10:15/12,8/6';
-        // xgid = 'XGID=--ACBBB-A-a--a---bbcBbbBb-:1:1:1:53:0:0:0:5:10:8/3,5/2';
-        // xgid = 'XGID=--BDBAB-----A----bccAcbBb-:1:1:1:63:0:0:0:5:10:20/14,12/9';
-        // xgid = 'XGID=--BDBAB--A----A--bcc-cbBb-:1:1:-1:65:0:0:0:5:10:7/1,6/1';
-        // xgid = 'XGID=--BDBAB--A----A--bbb-cbBd-:1:1:1:44:0:0:0:5:10:14/2,9/5'; // 3 in 1
-        // xgid = 'XGID=--CDBBB-----------bc-dbBd-:1:1:1:11:0:0:0:5:10:3/1,2/1,3/2';
-        // xgid = 'XGID=-BCBBBB-------A----cadcAd-:1:1:-1:51:0:0:0:5:10:5/off,1/off';
-        // xgid = 'XGID=-CBBBBC--------A----adc-e-:1:1:-1:54:0:0:0:5:10:5/off,4/off'; // TODO: decidere l'altezza
-        // xgid = 'XGID=-CBBBBC-A------------cc-e-:1:1:-1:21:0:0:0:5:10:4/2,1/off';
-        // xgid = 'XGID=-CCCBBA-A------------bcad-:1:1:-1:61:0:0:0:5:10:4/off,1/off'; // altezza.. è proprio bruttino
-        // xgid = 'XGID=-CCCBBA-A------------acac-:1:1:1:63:0:0:0:5:10:8/5,6/off';
-        // xgid = 'XGID=-CCCBC---------------acac-:1:1:-1:43:0:0:0:5:10:4/0,3/0';
-        // xgid = 'XGID=-CCCBC----------------bac-:1:1:1:43:0:0:0:5:10:4/0,3/0';
-        // xgid = 'XGID=-CCBAC----------------bac-:1:1:-1:53:0:0:0:5:10:3/off(2)';
-        // xgid = 'XGID=-CDBAA------------------b-:1:1:1:61:0:0:0:5:10:5/off,4/3';
-        // xgid = 'XGID=-CDC--------------------b-:1:1:-1:21:0:0:0:5:10:1/off(2)';
-
-        // xgid = 'XGID=-A----------------------d-:0:0:-1:11:0:0:0:0:10:1/off(4)';
-
         const bgb = BgDiagramBuilder(options);
 
         const White = bgb.White;
@@ -413,10 +362,20 @@ class BgDiagram {
         }
 
         // Moves (arrows)
-        const movelist = xgid.split(':')[10];
+        let movelist = xgid.split(':')[10];
         if (movelist) {
             let totaloff = 0; // Keep track of checkers that bear off
 
+            // Annotation
+            let arrowmod;
+
+            const ann = movelist.match(/([!?]+)$/);
+            if (ann) {
+                arrowmod = { '??': 'blunder', '?': 'error', '!': 'good', '!!': 'best' }[ann[0]];
+                movelist = movelist.slice(0, -ann[0].length);
+            }
+
+            // Put the moves into an array
             const moves = movelist
                 .replace('/\*/g', '')
                 .replace(/bar/g, '25')
@@ -432,20 +391,18 @@ class BgDiagram {
                     move = move.substring(0, p);
                 }
 
-                let off = 0; // How many checkers bear off this move
-
                 // Apply the move(s)
-                for(let i=0; i<repeat; i++) {
+                for (let i = 0; i < repeat; i++) {
                     const [from, to] = move
                         .split('/')
                         .map(m => m < 0 ? m : player == White ? parseInt(m) : 25 - parseInt(m));
 
-                    const fromHeight = point[from] * player - 1;
+                    const crossover = from >= 1 && from <= 24 && to >= 1 && to <= 24 && ((to <= 12 && from >= 13)||(to >= 13 && from <= 12));
+                    const fromHeight = point[from] * player + (crossover ? -1 : i*2 -repeat); // Try to avoid crossing arrows
 
                     if (to < 0) {
                         // Bearoff
-                        bgb.addArrow(from, fromHeight, to, totaloff+repeat-i-1); // This formula creates arrows that don't cross over
-                        off++;
+                        bgb.addArrow(from, fromHeight, to, totaloff++, arrowmod);
                     } else {
                         // Standard move
                         if (point[to] * player < 0) { // Capture
@@ -453,14 +410,12 @@ class BgDiagram {
                             point[bgb.getBarPosition(-player)] -= player;
                         }
                         const toHeight = Math.abs(point[to]);
-                        bgb.addArrow(from, fromHeight, to, toHeight);
+                        bgb.addArrow(from, fromHeight, to, toHeight, arrowmod);
                         point[to] += player;
                     }
 
                     point[from] -= player; // One less checker on the starting point
                 }
-
-                totaloff += off; // Update the bearoff checkers count
             });
         }
 

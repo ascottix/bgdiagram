@@ -81,3 +81,9 @@
 .bgdiagram__text--small {
     font-size: 20px;
 }
+
+.bgdiagram__arrow {
+    stroke: white;
+    stroke-width: 2px;
+    fill: black;
+}
