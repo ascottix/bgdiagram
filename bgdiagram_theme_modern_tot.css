@@ -1,0 +1,78 @@
+/* BgDiagram theme inspired by marine colors */
+.bgdiagram__theme--modern-tot {
+    .bgdiagram__board {
+        fill: #E0E8D0;
+    }
+
+    .bgdiagram__board-frame {
+        fill: #355E3B;
+        stroke: #355E3B;
+        stroke-width: 4px;
+    }
+
+    .bgdiagram__board-frame--nofill {
+        fill: none;
+    }
+
+    .bgdiagram__checker--white {
+        fill: #B89B72;
+    }
+
+    .bgdiagram__checker--black {
+        fill: #EFE4D8;
+    }
+
+    .bgdiagram__cube {
+        fill: #e7d690;
+        stroke: black;
+        stroke-width: 3px;
+    }
+
+    .bgdiagram__dice {
+        fill: #B89B72;
+        stroke: #323434;
+    }
+
+    .bgdiagram__dice-dot {
+        fill: #121314;
+    }
+
+    .bgdiagram__dice--black {
+        fill: #EFE4D8;
+    }
+
+    .bgdiagram__dice-dot--black {
+        fill: #323434;
+    }
+
+    .bgdiagram__point--black {
+        fill: #A8B89F;
+        stroke: #211f2c;
+    }
+
+    .bgdiagram__point--white {
+        fill: #D4A373;
+        stroke: #323434;
+    }
+
+    .bgdiagram__text--offboard,
+    .bgdiagram__text--score,
+    .bgdiagram__text--pipcount {
+        fill: #E0E8D0;
+    }
+
+    .bgdiagram__arrow--best {
+        fill: lime;
+        stroke: black;
+    }
+
+    .bgdiagram__arrow--error {
+        fill: gold;
+        stroke: black;
+    }
+
+    .bgdiagram__arrow--blunder {
+        fill: red;
+        stroke: black;
+    }
+}
