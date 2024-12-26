@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="bgdiagram_theme_marina.css">
     <link rel="stylesheet" href="bgdiagram_theme_mountain.css">
     <link rel="stylesheet" href="bgdiagram_theme_patriot.css">
+    <link rel="stylesheet" href="bgdiagram_theme_modern_tot.css">
     <style>
         body {
             background-color: lightgray;
@@ -22,6 +23,7 @@
         #board {
             margin-top: 1em;
             text-align: center;
+            transform-origin: center top;
         }
     </style>
     <script src="bgdiagram.js"></script>
@@ -54,7 +56,6 @@
         }
 
         function inlineStyles(svgElement) {
-            const styles = window.getComputedStyle(svgElement);
             const elements = svgElement.querySelectorAll('*');
 
             elements.forEach(element => {
@@ -118,11 +119,14 @@
     <div>
         <!-- Controls -->
         <label for="scale">Scale:</label>
-        <input id="scale" type="range" min="40" max="100" value="100" oninput="scaleChanged(this)" aria-label="Zoom the image in or out">
+        <input id="scale" type="range" min="40" max="100" value="100" oninput="scaleChanged(this)"
+            aria-label="Zoom the image in or out">
         <label for="theme">Theme:</label>
-        <select id="theme" oninput="themeChanged(this)" aria-label="Select a theme to change the visual appearance of the board">
+        <select id="theme" oninput="themeChanged(this)"
+            aria-label="Select a theme to change the visual appearance of the board">
             <option value="">Black & white</option>
             <option value="bgdiagram__theme--marina" selected>Marina</option>
+            <option value="bgdiagram__theme--modern-tot">Modern tone-on-tone</option>
             <option value="bgdiagram__theme--mountain">Mountain</option>
             <option value="bgdiagram__theme--patriot">Patriot</option>
         </select>
@@ -135,12 +139,15 @@
             <option value="XGID=-CCCBBA-A------------acac-:1:1:1:63:1:2:0:5:10:8/5,6/off!!">Little bit of everything
             </option>
             <option value="XGID=-A----------------------d-:0:0:-1:11:0:0:0:0:10:1/off(4)">So close...</option>
-            <option value="XGID=-a-aB-C-C--BcCa--d-e----B-:0:0:1:33:2:4:1:5:10:24/21(2),21/18(2)??">A blunder</option>
+            <option value="XGID=-b----E-C---dEa--c-da---B-:0:0:1:31:0:0:0:0:10:8/5,6/5??">A big error</option>
+            <option value="XGID=-b----E-C---dEa--c-da---B-:0:0:1:31:0:0:0:0:10:24/23,23/20*!!">A good move</option>
         </select>
         <label for="xgid">XGID:</label>
         <input id="xgid" oninput="xgidChanged()" aria-label="XGID (extremeGammon ID) of backgammon position"></input>
-        <input type="button" value="Download image" onclick="downloadImage(false)" aria-label="Download the board as an image"></input>
-        <input type="button" value="Copy to clipboard" onclick="downloadImage(true)" aria-label="Copy the image to clipboard"></input>
+        <input type="button" value="Download image" onclick="downloadImage(false)"
+            aria-label="Download the board as an image"></input>
+        <input type="button" value="Copy to clipboard" onclick="downloadImage(true)"
+            aria-label="Copy the image to clipboard"></input>
 
         <!-- Link to GitHub -->
         <div style="float:right"><a href="https://github.com/ascottix/bgdiagram">GitHub</a></div>

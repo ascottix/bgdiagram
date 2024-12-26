@@ -1,0 +1,56 @@
+/* BgDiagram theme inspired by a real board */
+.bgdiagram__theme--patriot {
+    .bgdiagram__board {
+        fill: #dbdfe5;
+    }
+
+    .bgdiagram__board-frame {
+        fill: #bbbdc0;
+        stroke: #434343;
+        stroke-width: 4px;
+    }
+
+    .bgdiagram__board-frame--nofill {
+        fill: none;
+    }
+
+    .bgdiagram__checker--white {
+        fill: #ece8e5;
+    }
+
+    .bgdiagram__checker--black {
+        fill: #434343;
+    }
+
+    .bgdiagram__cube {
+        stroke: black;
+        stroke-width: 3px;
+    }
+
+    .bgdiagram__dice {
+        fill: #ece8e5;
+        stroke: #211f2c;
+    }
+
+    .bgdiagram__dice-dot {
+        fill: #211f2c;
+    }
+
+    .bgdiagram__dice--black {
+        fill: #323232;
+    }
+
+    .bgdiagram__dice-dot--black {
+        fill: white;
+    }
+
+    .bgdiagram__point--black {
+        fill: #48a6ee;
+        stroke: white;
+    }
+
+    .bgdiagram__point--white {
+        fill: #f54b3b;
+        stroke: white;
+    }
+}
