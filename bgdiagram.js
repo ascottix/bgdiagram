@@ -65,7 +65,7 @@ function BgDiagramBuilder(options) {
         let edge; // Top or bottom
 
         if (pos < 0) {
-            cx = centerBearoffSide - 10;
+            cx = centerBearoffSide - 15;
             edge = (pos == PosOffBlack) ? -1 : +1;
         }
         else if (pos % 25 == 0) {
@@ -89,7 +89,6 @@ function BgDiagramBuilder(options) {
         svg.push(fragment);
     }
 
-    // Draw an arrow between two points
     function drawArrow(x1, y1, x2, y2, mod) {
         const LineWidth = CheckerSize * 0.2;
         const HeadWidth = CheckerSize * 0.5;
@@ -99,9 +98,19 @@ function BgDiagramBuilder(options) {
         const dy = y2 - y1;
         const angle = Math.atan2(dy, dx);
 
+        // Shorten the arrow slightly at the start
+        const shortenFactorAtStart = HeadLength * 0.1;
+        const adjustedX1 = x1 + shortenFactorAtStart * Math.cos(angle);
+        const adjustedY1 = y1 + shortenFactorAtStart * Math.sin(angle);
+
+        // Shorten the arrow slightly at the end
+        const shortenFactorAtEnd = HeadLength * 0;
+        const adjustedX2 = x2 - shortenFactorAtEnd * Math.cos(angle);
+        const adjustedY2 = y2 - shortenFactorAtEnd * Math.sin(angle);
+
         // Head base
-        const arrowBaseX = x2 - HeadLength * Math.cos(angle);
-        const arrowBaseY = y2 - HeadLength * Math.sin(angle);
+        const arrowBaseX = adjustedX2 - HeadLength * Math.cos(angle);
+        const arrowBaseY = adjustedY2 - HeadLength * Math.sin(angle);
 
         // Head and line offsets
         const lineOffsetX = (LineWidth / 2) * Math.sin(angle);
@@ -111,16 +120,16 @@ function BgDiagramBuilder(options) {
 
         // Build arrow
         const points = [
-            [x1 - lineOffsetX, y1 - lineOffsetY], // Lower line start
+            [adjustedX1 - lineOffsetX, adjustedY1 - lineOffsetY], // Lower line start
             [arrowBaseX - lineOffsetX, arrowBaseY - lineOffsetY], // Lower line end
             [arrowBaseX - headOffsetX, arrowBaseY - headOffsetY], // Head start
-            [x2, y2], // Head point
+            [adjustedX2, adjustedY2], // Head point
             [arrowBaseX + headOffsetX, arrowBaseY + headOffsetY], // Head end
             [arrowBaseX + lineOffsetX, arrowBaseY + lineOffsetY], // Upper line end
-            [x1 + lineOffsetX, y1 + lineOffsetY], // Upper line start
+            [adjustedX1 + lineOffsetX, adjustedY1 + lineOffsetY], // Upper line start
         ].map(point => point.join(',')).join(' ');
 
-        // Crea il poligono della freccia
+        // Creates the arrow polygon
         addSvg(`<polygon points="${points}" class="${bem('arrow', mod)}" />`);
     }
 
@@ -141,6 +150,9 @@ function BgDiagramBuilder(options) {
     function drawEmptyBoard() {
         const hx = fullBoardWidth / 2;
         const hy = -boardHeight / 2;
+
+        // Background
+        addSvg(`<rect x="${-hx}" y="${-fullBoardHeight / 2}" width="${fullBoardWidth}" height="${fullBoardHeight}" class="${bem('background')}"/>`);
 
         // Playing area
         addSvg(`<rect x="${-hx}" y="${hy}" width="${fullBoardWidth}" height="${boardHeight}" class="${bem('board')}"/>`); // Full board
