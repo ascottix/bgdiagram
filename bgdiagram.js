@@ -6,6 +6,11 @@
 const CheckerSize = 50;
 const BorderWidth = 2;
 
+/*
+    Options:
+    - flipx: home board on the left side
+    - scale: scale factor for the SVG output (default: 1)
+*/
 function BgDiagramBuilder(options) {
     options = options || {};
 
@@ -25,8 +30,9 @@ function BgDiagramBuilder(options) {
     const fullBoardWidth = 2 * sideWidth + 2 * boardWidth + barWidth + 2;
     const fullBoardHeight = boardHeight + 2 * BorderWidth + textAreaHeight * 2;
     const viewAreaWidth = fullBoardWidth + BorderWidth * 2;
-    const centerBearoffSide = boardWidth + barWidth + BorderWidth / 2;
-    const centerCubeSide = -centerBearoffSide;
+    const centerRightSide = boardWidth + barWidth + BorderWidth / 2;
+    const centerLeftSide = -centerRightSide;
+    const [centerBearoffSide, centerCubeSide] = options.flipx ? [centerLeftSide, centerRightSide] : [centerRightSide, centerLeftSide];
 
     const svg = [];
 
@@ -53,6 +59,10 @@ function BgDiagramBuilder(options) {
         return (player == White) ? PosOffWhite : PosOffBlack;
     }
 
+    function getPointPosition(pos) {
+        return options.flipx ? (pos > 12 ? 37 : 13) - pos : pos;
+    }
+
     // Return the coordinates of the center for the checker at the specified position:
     // - 1 to 24 are the standard points
     // - 0 is White's bar
@@ -65,7 +75,7 @@ function BgDiagramBuilder(options) {
         let edge; // Top or bottom
 
         if (pos < 0) {
-            cx = centerBearoffSide - 15;
+            cx = centerBearoffSide - 15 * Math.sign(centerBearoffSide);
             edge = (pos == PosOffBlack) ? -1 : +1;
         }
         else if (pos % 25 == 0) {
@@ -73,6 +83,8 @@ function BgDiagramBuilder(options) {
             edge = pos ? -1 : +1;
             cy0 -= CheckerSize / 2;
         } else {
+            pos = getPointPosition(pos);
+
             // Standard point
             const side = (pos >= 7 && pos <= 18) ? -1 : +1; // Left or right board
             edge = (pos <= 12) ? 1 : -1; // Bottom or top edge
@@ -143,7 +155,7 @@ function BgDiagramBuilder(options) {
 
         addSvg(`<polygon points="${x},${ey} ${x + CheckerSize},${ey} ${x + CheckerSize / 2},${sy}" class="${bem('point', pos % 2)}" />`);
 
-        addText(x + CheckerSize / 2, ey + edge * CheckerSize * 0.3, pos, 'point');
+        addText(x + CheckerSize / 2, ey + edge * CheckerSize * 0.3, getPointPosition(pos), 'point');
     }
 
     // Draw an empty board
@@ -208,7 +220,7 @@ function BgDiagramBuilder(options) {
 
     // Add a dice to the board, the position range is -2 (closest to the bar) to 3
     function addDice(player, value, pos) {
-        const cx = player * (CheckerSize * 2.5 + barWidth / 2 + pos * CheckerSize + BorderWidth);
+        const cx = (options.flipx ? -1 : +1) * player * (CheckerSize * 2.5 + barWidth / 2 + pos * CheckerSize + BorderWidth);
         const hsize = CheckerSize * 0.4;
 
         // Draw an empty dice
@@ -252,7 +264,7 @@ function BgDiagramBuilder(options) {
 
     // Add a player score
     function addScore(player, score, matchlen) {
-        const x = -(boardWidth + barWidth + BorderWidth / 2);
+        const x = centerCubeSide;
         const y = player * (pointHeight + CheckerSize * 0.2);
 
         addText(x, y, `${score}/${matchlen}`, `${getPlayerClass(player)} score${(matchlen > 10) ? ' small' : ''}`);
@@ -266,7 +278,7 @@ function BgDiagramBuilder(options) {
     // Add an indicator to show which player is to play
     function addPlayerOnTurnIndicator(player) {
         const r = CheckerSize / 5;
-        const x = boardWidth + barWidth + BorderWidth / 2;
+        const x = centerBearoffSide;
         const y = player * (boardHeight / 2 + BorderWidth * 2 + r);
 
         addSvg(`<circle cx="${x}" cy="${y}" r="${r}" class="${bem('checker', player)}" />`);
@@ -396,12 +408,13 @@ class BgDiagram {
 
             // Put the moves into an array
             const moves = movelist
-                .replace('/\*/g', '')
+                .replace(/\*/g, '')
                 .replace(/bar/g, '25')
                 .replace(/\/off|\/0/g, `/${bgb.getOffPosition(player)}`)
                 .split(/\s*,\s*|\s+/);
 
             moves.forEach(move => {
+                console.log(move);
                 // Handle doubles like 13/5(2)
                 let repeat = 1;
                 const p = move.indexOf('(');
