@@ -92,3 +92,26 @@
     stroke-width: 2px;
     fill: black;
 }
+
+.bgdiagram__polygon {
+    fill: none;
+    stroke: white;
+    stroke-width: 8px;
+}
+
+.bgdiagram__polygon--outer {
+    fill: none;
+    stroke: black;
+    stroke-width: 11px;
+}
+
+.bgdiagram__text--annotation,
+.bgdiagram__arrow--annotation {
+    fill:white;
+    stroke: black;
+}
+
+.bgdiagram__text--annotation {
+    font-size: 3em;
+    stroke-width: 2px;
+}

@@ -78,4 +78,27 @@
         fill: red;
         stroke: black;
     }
+
+    .bgdiagram__polygon {
+        fill: none;
+        stroke: deepskyblue;
+        stroke-width: 8px;
+    }
+
+    .bgdiagram__polygon--outer {
+        fill: none;
+        stroke: black;
+        stroke-width: 11px;
+    }
+
+    .bgdiagram__text--annotation,
+    .bgdiagram__arrow--annotation {
+        fill: deepskyblue;
+        stroke: black;
+    }
+
+    .bgdiagram__text--annotation {
+        font-size: 3em;
+        stroke-width: 2px;
+    }
 }

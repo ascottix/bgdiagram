@@ -101,7 +101,7 @@ function BgDiagramBuilder(options) {
         svg.push(fragment);
     }
 
-    function drawArrow(x1, y1, x2, y2, mod) {
+    function getArrowPoints(x1, y1, x2, y2, shortenFactorAtStart, shortenFactorAtEnd) {
         const LineWidth = CheckerSize * 0.2;
         const HeadWidth = CheckerSize * 0.5;
         const HeadLength = CheckerSize * 0.4;
@@ -111,14 +111,12 @@ function BgDiagramBuilder(options) {
         const angle = Math.atan2(dy, dx);
 
         // Shorten the arrow slightly at the start
-        const shortenFactorAtStart = HeadLength * 0.1;
-        const adjustedX1 = x1 + shortenFactorAtStart * Math.cos(angle);
-        const adjustedY1 = y1 + shortenFactorAtStart * Math.sin(angle);
+        const adjustedX1 = x1 + shortenFactorAtStart * HeadLength * Math.cos(angle);
+        const adjustedY1 = y1 + shortenFactorAtStart * HeadLength * Math.sin(angle);
 
         // Shorten the arrow slightly at the end
-        const shortenFactorAtEnd = HeadLength * 0;
-        const adjustedX2 = x2 - shortenFactorAtEnd * Math.cos(angle);
-        const adjustedY2 = y2 - shortenFactorAtEnd * Math.sin(angle);
+        const adjustedX2 = x2 - shortenFactorAtEnd * HeadLength * Math.cos(angle);
+        const adjustedY2 = y2 - shortenFactorAtEnd * HeadLength * Math.sin(angle);
 
         // Head base
         const arrowBaseX = adjustedX2 - HeadLength * Math.cos(angle);
@@ -131,7 +129,7 @@ function BgDiagramBuilder(options) {
         const headOffsetY = (HeadWidth / 2) * -Math.cos(angle);
 
         // Build arrow
-        const points = [
+        return [
             [adjustedX1 - lineOffsetX, adjustedY1 - lineOffsetY], // Lower line start
             [arrowBaseX - lineOffsetX, arrowBaseY - lineOffsetY], // Lower line end
             [arrowBaseX - headOffsetX, arrowBaseY - headOffsetY], // Head start
@@ -139,10 +137,27 @@ function BgDiagramBuilder(options) {
             [arrowBaseX + headOffsetX, arrowBaseY + headOffsetY], // Head end
             [arrowBaseX + lineOffsetX, arrowBaseY + lineOffsetY], // Upper line end
             [adjustedX1 + lineOffsetX, adjustedY1 + lineOffsetY], // Upper line start
-        ].map(point => point.join(',')).join(' ');
+        ]
+    }
+
+    function drawDoubleArrow(x1, y1, x2, y2, mod) {
+        // Rather than redoing all the math, we just merge two half-arrows
+        const mx = (x2 - x1) / 2;
+        const my = (y2 - y1) / 2;
+        const points1 = getArrowPoints(x1 + mx, y1 + my, x1, y1, 0, 0);
+        const points2 = getArrowPoints(x1 + mx, y1 + my, x2, y2, 0, 0);
+        points1.pop();
+        points2.pop();
+        const points = [...points1, ...points2];
+
+        addSvg(`<polygon points="${points.map(point => point.join(',')).join(' ')}" class="${bem('arrow', mod)}" />`);
+    }
+
+    function drawArrow(x1, y1, x2, y2, mod) {
+        const points = getArrowPoints(x1, y1, x2, y2, 0.1, 0);
 
         // Creates the arrow polygon
-        addSvg(`<polygon points="${points}" class="${bem('arrow', mod)}" />`);
+        addSvg(`<polygon points="${points.map(point => point.join(',')).join(' ')}" class="${bem('arrow', mod)}" />`);
     }
 
     // Draw a board point at the specified position
@@ -197,6 +212,16 @@ function BgDiagramBuilder(options) {
         const [cx2, cy2] = getCheckerCenter(point2, height2);
 
         drawArrow(cx1, cy1, cx2, cy2, mod);
+    }
+
+    // Add a polygon
+    function addPolygon(points, mod) {
+        const className = 'polygon';
+
+        points = points.map(p => getCheckerCenter(p[0], p[1]).join(',')).join(' ');
+
+        addSvg(`<polygon points="${points}" class="${bem(className, 'outer')}" />`);
+        addSvg(`<polygon points="${points}" class="${bem(className, mod)}" />`);
     }
 
     // Add checker to specific point (0 or 25 is the bar)
@@ -311,6 +336,7 @@ function BgDiagramBuilder(options) {
         Black,
         getBarPosition,
         getOffPosition,
+        getCheckerCenter,
         addArrow,
         addCheckers,
         addCheckersOffboard,
@@ -318,6 +344,7 @@ function BgDiagramBuilder(options) {
         addDice,
         addPipsCount,
         addPlayerOnTurnIndicator,
+        addPolygon,
         addScore,
         addSvg,
         addText,
@@ -345,7 +372,7 @@ class BgDiagram {
         }
 
         // Tokenize
-        const token = xgid.split(':').map(t => parseInt(t));
+        const token = xgid.split(':').map(Number);
 
         // Checkers
         const pips = { [White]: 0, [Black]: 0 };
@@ -392,13 +419,17 @@ class BgDiagram {
             bgb.addScore(Black, token[6], matchLength);
         }
 
-        // Moves (arrows)
-        let movelist = xgid.split(':')[10];
-        if (movelist) {
+        // Annotation support functions
+        const classAnnotation = 'annotation';
+
+        function parsePointList(points) {
+            return points.substring(1).split('-').map(p => p.split(',').map(Number));
+        }
+
+        function handleMoveList(movelist) {
             let totaloff = 0; // Keep track of checkers that bear off
 
-            // Annotation
-            let arrowmod;
+            let arrowmod; // Arrow class modifier
 
             const ann = movelist.match(/([!?]+)$/);
             if (ann) {
@@ -414,7 +445,6 @@ class BgDiagram {
                 .split(/\s*,\s*|\s+/);
 
             moves.forEach(move => {
-                console.log(move);
                 // Handle doubles like 13/5(2)
                 let repeat = 1;
                 const p = move.indexOf('(');
@@ -449,6 +479,43 @@ class BgDiagram {
                     point[from] -= player; // One less checker on the starting point
                 }
             });
+        }
+
+        function handleDrawArrow(points) {
+            const [[p1, h1], [p2, h2]] = parsePointList(points);
+            bgb.addArrow(p1, h1, p2, h2, classAnnotation);
+        }
+
+        function handleDrawPolygon(points) {
+            bgb.addPolygon(parsePointList(points), classAnnotation);
+        }
+
+        function handleDrawText(annotation) {
+            const parts = annotation.split('-');
+            const [[px, py]] = parsePointList(parts[0]);
+            const [x, y] = bgb.getCheckerCenter(px, py);
+            bgb.addText(x, y, parts[1], classAnnotation);
+        }
+
+        // Annotations
+        const annotations = xgid.split(':').slice(10);
+
+        for (const annotation of annotations) {
+            console.log(annotation);
+            switch (annotation[0]) {
+                case 'A':
+                    handleDrawArrow(annotation);
+                    break;
+                case 'P':
+                    handleDrawPolygon(annotation);
+                    break;
+                case 'T':
+                    handleDrawText(annotation);
+                    break;
+                default:
+                    handleMoveList(annotation);
+                    break;
+            }
         }
 
         // Dice

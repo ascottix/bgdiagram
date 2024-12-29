@@ -26,6 +26,10 @@
             transform-origin: center top;
         }
 
+        .hide-pipcount .bgdiagram__text--pipcount {
+            display: none;
+        }
+
         #header {
             text-align: center;
         }
@@ -70,6 +74,10 @@
     <script>
         function board() {
             return document.getElementById('board');
+        }
+
+        function toggleHidePipcount() {
+            board().classList.toggle('hide-pipcount');
         }
 
         function scaleChanged(slider) {
@@ -183,9 +191,12 @@
                 <option value="XGID=-A----------------------d-:0:0:-1:11:0:0:0:0:10:1/off(4)">So close...</option>
                 <option value="XGID=-b----E-C---dEa--c-da---B-:0:0:1:31:0:0:0:0:10:8/5,6/5??">A big error</option>
                 <option value="XGID=-b----E-C---dEa--c-da---B-:0:0:1:31:0:0:0:0:10:24/23,23/20*!!">A good move</option>
+                <option value="XGID=---ABCD------------bbbbb--:0:0:1:00:0:0:0:0:10:P6,0-6,3-3,0:P19,0-19,1-23,1-23,0:A5,4-5,3:A21,3-21,2:T0,4.5-Marked point x 10">Pip counting trick</option>
             </select>
             <label>Bearoff on left:<input id="flipx" type="checkbox" oninput="xgidChanged()"
                     aria-label="Flip the board to show bearoff on the left"></label>
+                    <label>Show/hide pipcount:<input id="flipx" type="checkbox" oninput="toggleHidePipcount()"
+                        aria-label="Show or hide the pipcount indicator"></label>
             <button onclick="downloadImage(false)" aria-label="Download the board as an image">Download image</button>
             <button onclick="downloadImage(true)" aria-label="Copy the image to clipboard">Copy to clipboard</button>
 
