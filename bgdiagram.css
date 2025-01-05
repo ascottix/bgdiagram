@@ -60,12 +60,12 @@
     stroke-width: 2px;
 }
 
-.bgdiagram__point--black {
+.bgdiagram__point--odd {
     fill: darkgray;
     stroke: black;
 }
 
-.bgdiagram__point--white {
+.bgdiagram__point--even {
     fill: white;
     stroke: black;
 }

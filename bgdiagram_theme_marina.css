@@ -46,12 +46,12 @@
         fill: #ece8e5;
     }
 
-    .bgdiagram__point--black {
+    .bgdiagram__point--odd {
         fill: #f7ad3d;
         stroke: #211f2c;
     }
 
-    .bgdiagram__point--white {
+    .bgdiagram__point--even {
         fill: #d9d9de;
         stroke: #323434;
     }

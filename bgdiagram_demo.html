@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="bgdiagram_theme_mountain.css">
     <link rel="stylesheet" href="bgdiagram_theme_patriot.css">
     <link rel="stylesheet" href="bgdiagram_theme_modern_tot.css">
+    <link rel="stylesheet" href="bgdiagram_theme_marble.css">
     <style>
         body {
             background-color: lightgray;
@@ -101,7 +102,8 @@
         function xgidChanged() {
             const input = document.getElementById('xgid');
             const flipx = document.getElementById('flipx').checked;
-            board().innerHTML = BgDiagram.fromXgid(input.value, { flipx });
+            const swapColors = document.getElementById('swapcolors').checked;
+            board().innerHTML = BgDiagram.fromXgid(input.value, { flipx, swapColors });
         }
 
         function inlineStyles(svgElement) {
@@ -165,44 +167,48 @@
 </head>
 
 <body>
+    <!-- Controls -->
     <div id="controls">
-        <!-- Controls -->
         <h1>BgDiagram</h1>
         <label r="scale">Scale:</label>
-            <input id="scale" type="range" min="40" max="100" value="100" oninput="scaleChanged(this)"
-                aria-label="Zoom the image in or out">
-            <label for="theme">Theme:</label>
-            <select id="theme" oninput="themeChanged(this)"
-                aria-label="Select a theme to change the visual appearance of the board">
-                <option value="">Black & white</option>
-                <option value="bgdiagram__theme--marina" selected>Marina</option>
-                <option value="bgdiagram__theme--modern-tot">Modern tone-on-tone</option>
-                <option value="bgdiagram__theme--mountain">Mountain</option>
-                <option value="bgdiagram__theme--patriot">Patriot</option>
-            </select>
-            <label for="position">Preset position:</label>
-            <select id="position" oninput="positionChanged()">
-                <option value="XGID=-b----E-C---eE---c-e----B-:0:0:1:00:0:0:0:0:10">Start board</option>
-                <option value="XGID=-a-a--E-D---dD---d-e---AA-:0:0:-1:42:0:2:0:7:10">Make the 5 or 4?</option>
-                <option value="XGID=a-a--BCAB--BeB----ce-A--B-:0:0:-1:00:0:0:0:5:10">Is this a cube?</option>
-                <option value="XGID=-a---BC-C--AeD---cae----AA:0:0:1:42:0:0:0:0:10">What's the best move?</option>
-                <option value="XGID=-CCCBBA-A------------acac-:1:1:1:63:1:2:0:5:10:8/5,6/off!!">Little bit of everything
-                </option>
-                <option value="XGID=-A----------------------d-:0:0:-1:11:0:0:0:0:10:1/off(4)">So close...</option>
-                <option value="XGID=-b----E-C---dEa--c-da---B-:0:0:1:31:0:0:0:0:10:8/5,6/5??">A big error</option>
-                <option value="XGID=-b----E-C---dEa--c-da---B-:0:0:1:31:0:0:0:0:10:24/23,23/20*!!">A good move</option>
-                <option value="XGID=---ABCD------------bbbbb--:0:0:1:00:0:0:0:0:10:P6,0-6,3-3,0:P19,0-19,1-23,1-23,0:A5,4-5,3:A21,3-21,2:T0,4.5-Marked point x 10">Pip counting trick</option>
-            </select>
-            <label>Bearoff on left:<input id="flipx" type="checkbox" oninput="xgidChanged()"
-                    aria-label="Flip the board to show bearoff on the left"></label>
-                    <label>Show/hide pipcount:<input id="flipx" type="checkbox" oninput="toggleHidePipcount()"
-                        aria-label="Show or hide the pipcount indicator"></label>
-            <button onclick="downloadImage(false)" aria-label="Download the board as an image">Download image</button>
-            <button onclick="downloadImage(true)" aria-label="Copy the image to clipboard">Copy to clipboard</button>
+        <input id="scale" type="range" min="40" max="100" value="100" oninput="scaleChanged(this)"
+            aria-label="Zoom the image in or out">
+        <label for="theme">Theme:</label>
+        <select id="theme" oninput="themeChanged(this)"
+            aria-label="Select a theme to change the visual appearance of the board">
+            <option value="">Black & white</option>
+            <option value="bgdiagram__theme--marina" selected>Marina</option>
+            <option value="bgdiagram__theme--modern-tot">Modern tone-on-tone</option>
+            <option value="bgdiagram__theme--mountain">Mountain</option>
+            <option value="bgdiagram__theme--patriot">Patriot</option>
+        </select>
+        <label for="position">Preset position:</label>
+        <select id="position" oninput="positionChanged()">
+            <option value="XGID=-b----E-C---eE---c-e----B-:0:0:1:00:0:0:0:0:10">Start board</option>
+            <option value="XGID=-a-a--E-D---dD---d-e---AA-:0:0:-1:42:0:2:0:7:10">Make the 5 or 4?</option>
+            <option value="XGID=a-a--BCAB--BeB----ce-A--B-:0:0:-1:00:0:0:0:5:10">Is this a cube?</option>
+            <option value="XGID=-a---BC-C--AeD---cae----AA:0:0:1:42:0:0:0:0:10">What's the best move?</option>
+            <option value="XGID=-CCCBBA-A------------acac-:1:1:1:63:1:2:0:5:10:8/5,6/off!!">Little bit of everything
+            </option>
+            <option value="XGID=-A----------------------d-:0:0:-1:11:0:0:0:0:10:1/off(4)">So close...</option>
+            <option value="XGID=-b----E-C---dEa--c-da---B-:0:0:1:31:0:0:0:0:10:8/5,6/5??">A big error</option>
+            <option value="XGID=-b----E-C---dEa--c-da---B-:0:0:1:31:0:0:0:0:10:24/23,23/20*!!">A good move</option>
+            <option
+                value="XGID=---ABCD------------bbbbb--:0:0:1:00:0:0:0:0:10:P6,0-6,3-3,0:P19,0-19,1-23,1-23,0:A5,4-5,3:A21,3-21,2:T0,4.5-Marked point x 10">
+                Pip counting trick</option>
+        </select>
+        <label>Bearoff on left:<input id="flipx" type="checkbox" oninput="xgidChanged()"
+                aria-label="Flip the board to show bearoff on the left"></label>
+        <label>Show/hide pipcount:<input id="flipx" type="checkbox" oninput="toggleHidePipcount()"
+                aria-label="Show or hide the pipcount indicator"></label>
+        <label>Swap colors:<input id="swapcolors" type="checkbox" oninput="xgidChanged()"
+                aria-label="Swap the player colors"></label>
+        <button onclick="downloadImage(false)" aria-label="Download the board as an image">Download image</button>
+        <button onclick="downloadImage(true)" aria-label="Copy the image to clipboard">Copy to clipboard</button>
 
-            <!-- Link to GitHub -->
-            <br>
-            <div>Get on <a href="https://github.com/ascottix/bgdiagram">GitHub</a></div>
+        <!-- Link to GitHub -->
+        <br>
+        <div>Get on <a href="https://github.com/ascottix/bgdiagram">GitHub</a></div>
     </div>
 
     <!-- Header -->

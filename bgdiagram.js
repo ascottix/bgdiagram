@@ -10,9 +10,12 @@ const BorderWidth = 2;
     Options:
     - flipx: home board on the left side
     - scale: scale factor for the SVG output (default: 1)
+    - swapColors: swap player colors (default: false)
 */
 function BgDiagramBuilder(options) {
     options = options || {};
+
+    const swapColors = options.swapColors ? -1 : +1;
 
     const White = +1;
     const Black = -1;
@@ -40,7 +43,7 @@ function BgDiagramBuilder(options) {
     const BemMain = 'bgdiagram';
 
     function getPlayerClass(player) {
-        return (player == White) ? 'white' : 'black';
+        return (player * swapColors == White) ? 'white' : 'black';
     }
 
     function bem(block, modifiers) {
@@ -168,7 +171,7 @@ function BgDiagramBuilder(options) {
         const sy = edge * pointGap / 2;
         const ey = sy + edge * (pointHeight - 1);
 
-        addSvg(`<polygon points="${x},${ey} ${x + CheckerSize},${ey} ${x + CheckerSize / 2},${sy}" class="${bem('point', pos % 2)}" />`);
+        addSvg(`<polygon points="${x},${ey} ${x + CheckerSize},${ey} ${x + CheckerSize / 2},${sy}" class="${bem('point', pos % 2 ? 'odd' : 'even')}" />`);
 
         addText(x + CheckerSize / 2, ey + edge * CheckerSize * 0.3, getPointPosition(pos), 'point');
     }
