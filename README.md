@@ -10,7 +10,7 @@ You can [try an interactive version here](https://ascottix.github.io/bgdiagram/b
 
 Annotations can add arrows, text and shapes to a diagram.
 
-BgDiagram supports annotation using extra fields in XGID positions. This way, it's very simple to keep a position and its annotations together.
+BgDiagram supports annotations using extra fields in XGID positions. This way, it's very simple to keep a position and its annotations together.
 
 There are several types of annotations:
 - moves are expressed in the standard notation, for example: 6/5(2), bar/21, 5/off
@@ -57,7 +57,8 @@ Several themes are provided to show how it works. The most complete example is "
 
 The diagram builder supports the following options:
 - scale: the diagram scale factor (default: 1)
-- flipx: if true, the bearoff side is on the left (default: false)
+- homeOnLeft: if true, the home/bearoff side is on the left (default: false)
+- swapColors: if true, the colors of the player checkers are swapped
 
 ## License
 

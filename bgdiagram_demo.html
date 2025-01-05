@@ -31,6 +31,10 @@
             display: none;
         }
 
+        .hide-pointnumbers .bgdiagram__text--point {
+            display: none;
+        }
+
         #header {
             text-align: center;
         }
@@ -81,6 +85,10 @@
             board().classList.toggle('hide-pipcount');
         }
 
+        function toggleHidePointNumbers() {
+            board().classList.toggle('hide-pointnumbers');
+        }
+
         function scaleChanged(slider) {
             board().style.transform = `scale(${slider.value / 100})`;
         }
@@ -101,9 +109,9 @@
 
         function xgidChanged() {
             const input = document.getElementById('xgid');
-            const flipx = document.getElementById('flipx').checked;
+            const homeOnLeft = document.getElementById('flipx').checked;
             const swapColors = document.getElementById('swapcolors').checked;
-            board().innerHTML = BgDiagram.fromXgid(input.value, { flipx, swapColors });
+            board().innerHTML = BgDiagram.fromXgid(input.value, { homeOnLeft, swapColors });
         }
 
         function inlineStyles(svgElement) {
@@ -196,12 +204,16 @@
             <option
                 value="XGID=---ABCD------------bbbbb--:0:0:1:00:0:0:0:0:10:P6,0-6,3-3,0:P19,0-19,1-23,1-23,0:A5,4-5,3:A21,3-21,2:T0,4.5-Marked point x 10">
                 Pip counting trick</option>
+            <option value="XGID=------AA-----A----bb----A-:0:0:1:00:0:0:0:0:10:D13,0-7,0:D6,0-24,0:T16,4-20:T21,4-30">
+                Pip counting trick 2</option>
         </select>
-        <label>Bearoff on left:<input id="flipx" type="checkbox" oninput="xgidChanged()"
-                aria-label="Flip the board to show bearoff on the left"></label>
-        <label>Show/hide pipcount:<input id="flipx" type="checkbox" oninput="toggleHidePipcount()"
+        <label>Home on left:<input id="flipx" type="checkbox" oninput="xgidChanged()"
+                aria-label="Place home board on the left"></label>
+        <label>Hide pipcount:<input type="checkbox" oninput="toggleHidePipcount()"
                 aria-label="Show or hide the pipcount indicator"></label>
-        <label>Swap colors:<input id="swapcolors" type="checkbox" oninput="xgidChanged()"
+                <label>Hide point numbers:<input type="checkbox" oninput="toggleHidePointNumbers()"
+                    aria-label="Show or hide the point number indicator"></label>
+            <label>Swap colors:<input id="swapcolors" type="checkbox" oninput="xgidChanged()"
                 aria-label="Swap the player colors"></label>
         <button onclick="downloadImage(false)" aria-label="Download the board as an image">Download image</button>
         <button onclick="downloadImage(true)" aria-label="Copy the image to clipboard">Copy to clipboard</button>
