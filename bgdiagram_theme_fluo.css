@@ -1,0 +1,113 @@
+/* BgDiagram fluo theme */
+.bgdiagram__theme--fluo {
+    .bgdiagram__board {
+        fill: black;
+    }
+
+    .bgdiagram__board-frame {
+        fill: black;
+        stroke: #ca46ac;
+        stroke-width: 4px;
+    }
+
+    .bgdiagram__board-frame--nofill {
+        fill: none;
+    }
+
+    .bgdiagram__checker--white {
+        fill: #cacb01;
+        fill-opacity: 80%;
+        stroke:#d2d301;
+        stroke-width: 2.25px;
+    }
+
+    .bgdiagram__checker--black {
+        fill: #2C75FF;
+        fill-opacity: 80%;
+        stroke:#3d81ff;
+        stroke-width: 2.25px;
+    }
+
+    .bgdiagram__checker--turn {
+        fill-opacity: 100%;
+        stroke: black;
+        stroke-width: 1px;
+    }
+
+    .bgdiagram__cube {
+        fill: #fe59d7;
+    }
+
+    .bgdiagram__dice {
+        fill: #cacb01;
+        fill-opacity: 90%;
+    }
+
+    .bgdiagram__dice-dot {
+        fill: black;
+    }
+
+    .bgdiagram__dice--black {
+        fill: #2C75FF;
+    }
+
+    .bgdiagram__point--odd {
+        fill: #ff8c00;
+        fill-opacity: 30%;
+        stroke: #ff8c00;
+    }
+
+    .bgdiagram__point--even {
+        fill: #06cacb;
+        fill-opacity: 30%;
+        stroke: #06cacb;
+    }
+
+    .bgdiagram__text--offboard,
+    .bgdiagram__text--score,
+    .bgdiagram__text--pipcount {
+        fill: #f0f0f0;
+    }
+
+    .bgdiagram__arrow--best {
+        fill: #39ff14;
+        fill-opacity: 80%;
+        stroke: black;
+    }
+
+    .bgdiagram__arrow--error {
+        fill: gold;
+        fill-opacity: 80%;
+        stroke: black;
+    }
+
+    .bgdiagram__arrow--blunder {
+        fill: #ff073a;
+        fill-opacity: 80%;
+        stroke: black;
+    }
+
+    .bgdiagram__polygon {
+        fill: none;
+        stroke: #39ff14;
+        stroke-opacity: 95%;
+        stroke-width: 8px;
+    }
+
+    .bgdiagram__polygon--outer {
+        fill: none;
+        stroke: black;
+        stroke-width: 11px;
+    }
+
+    .bgdiagram__text--annotation,
+    .bgdiagram__arrow--annotation {
+        fill: #39ff14;
+        stroke: black;
+    }
+
+    .bgdiagram__text--annotation {
+        font-size: 3em;
+        stroke-width: 2px;
+    }
+}

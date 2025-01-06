@@ -15,8 +15,28 @@ BgDiagram supports annotations using extra fields in XGID positions. This way, i
 There are several types of annotations:
 - moves are expressed in the standard notation, for example: 6/5(2), bar/21, 5/off
 - arrows: an 'A' followed by a list of two points
+- double arrows: a 'D' followed by a list of two points
 - polygons (shapes): a 'P' followed by a list of points
 - text: a 'T' followed by a point and then the text
+
+A point (for arrows, polygons, etc.) is expressed with two numbers separated by a comma.
+
+The first number can be:
+- 0 for the top player bar;
+- a board point from 1 to 24 as indicated in the diagram;
+- 25 for the bottom player bar.
+
+The second number is the point height, in checker size increments, from 0 to 10:
+- 0 is the position of first checker;
+- 1 is the position of the second checker;
+- 4 is the position of the fifth checker;
+- 10 is the position of the 11-th checker, which is the same as the first checker of the opposite point.
+
+Points in a list are separated by a dash, for example: 1,2-3,4-5,6.
+
+This is actually much easier to use than it is to explain: check the examples, do a couple of experiments and it will be clear very soon.
+
+The exact center of the board is 0,4.5.
 
 Moves can be further annotated (chess-style) adding one of these suffixes:
 - !! for the best move
@@ -25,16 +45,6 @@ Moves can be further annotated (chess-style) adding one of these suffixes:
 - ?? for a blunder (big error)
 
 If found, they are converted into CSS classes (`best`, `good`, `error`, `blunder`) that can be used to further customize the move arrows.
-
-All points are expressed in board point coordinates, where:
-- the first number is the board point from 1 to 24 or:
-    - 0 for the top player bar
-    - 25 for the bottom player bar
-- the second number is the point height, in checker size increments, from 0 to 10 (0 is the point base, 10 is the point base of the opposite point, a typical height goes from 0 to 4)
-
-The exact center of the board is 0,4.5.
-
-Points in a list are separated by a dash, for example: 1,2-3,4-5,6.
 
 The [interactive demo gallery](https://ascottix.github.io/bgdiagram/bgdiagram_demo.html) contains several examples of annotated positions. You can directly modify the XGID string and it will be easy to see how it works after a few experiments.
 

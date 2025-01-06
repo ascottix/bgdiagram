@@ -51,7 +51,7 @@ function BgDiagramBuilder(options) {
             modifiers = getPlayerClass(modifiers);
         }
 
-        return `${BemMain}__${block}` + (modifiers ? modifiers.split(' ').map(m => ` ${BemMain}__${block}--${m}`).join(' ') : '');
+        return `${BemMain}__${block}` + (modifiers ? ' ' + modifiers.split(' ').map(m => `${BemMain}__${block}--${m}`).join(' ') : '');
     }
 
     function getBarPosition(player) {
@@ -317,7 +317,7 @@ function BgDiagramBuilder(options) {
         const x = centerBearoffSide;
         const y = player * (boardHeight / 2 + BorderWidth * 2 + r);
 
-        addSvg(`<circle cx="${x}" cy="${y}" r="${r}" class="${bem('checker', player)}" />`);
+        addSvg(`<circle cx="${x}" cy="${y}" r="${r}" class="${bem('checker', 'turn '+getPlayerClass(player))}" />`);
     }
 
     // Close the board and return the generated SVG
