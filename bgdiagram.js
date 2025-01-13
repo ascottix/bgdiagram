@@ -7,10 +7,7 @@ const CheckerSize = 50;
 const BorderWidth = 2;
 
 /*
-    Options:
-    - scale: scale factor for the SVG output (default: 1)
-    - homeOnLeft: home board on the left side
-    - swapColors: swap player colors (default: false)
+    Options: see README.md for details.
 */
 function BgDiagramBuilder(options) {
     options = options || {};
@@ -206,7 +203,7 @@ function BgDiagramBuilder(options) {
 
     // Add text to specified position
     function addText(x, y, text, mod) {
-        addSvg(`<text x="${x}" y="${y}" class="${bem('text', mod)}">${text}</text>`);
+        addSvg(`<text x="${x}" y="${y+(options.textOffsetY || 0)}" class="${bem('text', mod)}">${text}</text>`);
     }
 
     // Add an arrow
@@ -329,11 +326,27 @@ function BgDiagramBuilder(options) {
 
     // Reset the builder to the initial state
     function reset() {
-        const scale = options.scale || 1;
+        const attrs = [];
 
+        attrs.push(`viewBox="${-viewAreaWidth / 2} ${-fullBoardHeight / 2} ${viewAreaWidth} ${fullBoardHeight}"`);
+        attrs.push('role="img"');
+        attrs.push('aria-label="Diagram of a backgammon game position"');
+
+        // Width and height
+        options.width && attrs.push(`width="${options.width}"`);
+        options.height && attrs.push(`height="${options.height}"`);
+
+        // Class names
+        const classes = options.classNames || [];
+
+        classes.push(BemMain);
+
+        attrs.push(`class="${classes.join(' ')}"`);
+
+        // Clear and reinitialize the SVG buffer
         svg.length = 0;
 
-        addSvg(`<svg width="${viewAreaWidth * scale}" height="${fullBoardHeight * scale}" viewBox="${-viewAreaWidth / 2} ${-fullBoardHeight / 2} ${viewAreaWidth} ${fullBoardHeight}" class="${BemMain}" role="img" aria-label="Diagram of a backgammon game position">`);
+        addSvg(`<svg ${attrs.join(' ')}>`);
 
         drawEmptyBoard();
     }

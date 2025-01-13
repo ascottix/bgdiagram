@@ -22,9 +22,17 @@
         }
 
         #board {
+            width: 100%;
+            height: 65vh;
             margin-top: 1em;
             text-align: center;
             transform-origin: center top;
+        }
+
+        #board svg {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .hide-pipcount .bgdiagram__text--pipcount {
@@ -35,11 +43,20 @@
             display: none;
         }
 
+        .solid-background .bgdiagram__background {
+            fill: white;
+        }
+
         #header {
             text-align: center;
         }
 
         @media (min-width: 1280px) {
+            #board {
+                width: calc(100vw - 14em);
+                height: 90vh;
+            }
+
             #controls {
                 position: fixed;
                 left: 0;
@@ -89,6 +106,10 @@
             board().classList.toggle('hide-pointnumbers');
         }
 
+        function toggleSolidBackground() {
+            board().classList.toggle('solid-background');
+        }
+
         function scaleChanged(slider) {
             board().style.transform = `scale(${slider.value / 100})`;
         }
@@ -114,24 +135,45 @@
             board().innerHTML = BgDiagram.fromXgid(input.value, { homeOnLeft, swapColors });
         }
 
+        const ExportedStyles = ['dominant-baseline', 'fill', 'fill-opacity', 'font-family', 'font-size', 'font-weight', 'stroke', 'stroke-opacity', 'stroke-width', 'text-anchor', 'transform'];
+        const ExportedStylesIncludes = ExportedStyles.reduce((acc, style) => ({ ...acc, [style]: true }), {});
+
         function inlineStyles(svgElement) {
             const elements = svgElement.querySelectorAll('*');
 
             elements.forEach(element => {
                 const computedStyles = window.getComputedStyle(element);
                 for (let property of computedStyles) {
-                    element.style[property] = computedStyles.getPropertyValue(property);
+                    if (!ExportedStylesIncludes[property]) continue;
+                    const value = computedStyles.getPropertyValue(property);
+                    if (property == 'transform' && value == 'none') continue;
+                    element.style[property] = value;
                 }
             });
         }
 
-        function downloadImage(toClipboard) {
+        function downloadImage(toClipboard, asSvg = false) {
             const svgElement = board().querySelector('svg');
 
             inlineStyles(svgElement); // Inline the CSS styles
 
             const serializer = new XMLSerializer();
             const svgString = serializer.serializeToString(svgElement);
+
+            if (asSvg) {
+                // Create a Blob from the SVG string
+                const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+                const url = URL.createObjectURL(svgBlob);
+
+                // Trigger download
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'bgdiagram.svg';
+                link.click();
+
+                URL.revokeObjectURL(url);
+                return;
+            }
 
             // Create a Blob from the SVG string
             const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
@@ -158,8 +200,6 @@
                     }, "image/png");
                 }
 
-                URL.revokeObjectURL(url);
-
                 // Convert canvas to PNG and trigger download
                 if (!toClipboard) {
                     const pngUrl = canvas.toDataURL("image/png");
@@ -168,6 +208,8 @@
                     link.download = 'bgdiagram.png';
                     link.click();
                 }
+
+                URL.revokeObjectURL(url);
             };
             img.src = url;
         }
@@ -212,12 +254,15 @@
                 aria-label="Place home board on the left"></label>
         <label>Hide pipcount:<input type="checkbox" oninput="toggleHidePipcount()"
                 aria-label="Show or hide the pipcount indicator"></label>
-                <label>Hide point numbers:<input type="checkbox" oninput="toggleHidePointNumbers()"
-                    aria-label="Show or hide the point number indicator"></label>
-            <label>Swap colors:<input id="swapcolors" type="checkbox" oninput="xgidChanged()"
+        <label>Hide point numbers:<input type="checkbox" oninput="toggleHidePointNumbers()"
+                aria-label="Show or hide the point number indicator"></label>
+        <label>Swap colors:<input id="swapcolors" type="checkbox" oninput="xgidChanged()"
                 aria-label="Swap the player colors"></label>
+        <label>Solid background:<input type="checkbox" oninput="toggleSolidBackground()"
+                aria-label="Make the background solid or transparent"></label>
         <button onclick="downloadImage(false)" aria-label="Download the board as an image">Download image</button>
         <button onclick="downloadImage(true)" aria-label="Copy the image to clipboard">Copy to clipboard</button>
+        <button onclick="downloadImage(true, true)" aria-label="Download the board image as SVG">Download SVG</button>
 
         <!-- Link to GitHub -->
         <br>

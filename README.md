@@ -66,9 +66,12 @@ Diagrams can be styled using CSS.
 Several themes are provided to show how it works. The most complete example is "Marina".
 
 The diagram builder supports the following options:
-- scale: the diagram scale factor (default: 1)
+- width: diagram width (default: not set)
+- height: diagram height (default: not set)
 - homeOnLeft: if true, the home/bearoff side is on the left (default: false)
 - swapColors: if true, the colors of the player checkers are swapped
+
+Width and height can be numbers (e.g. 500) or strings (e.g. '100%'). It is often better to leave them unset and use CSS to control the size of the SVG element.
 
 ## License
 
