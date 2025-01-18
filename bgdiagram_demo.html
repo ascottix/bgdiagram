@@ -56,6 +56,13 @@
             text-align: center;
         }
 
+        /* Fix for Firefox */
+        @-moz-document url-prefix() {
+            text {
+                transform: translateY(0.4%);
+            }
+        }
+
         @media (min-width: 1280px) {
             #board {
                 width: calc(100vw - 14em);
@@ -129,8 +136,6 @@
 
             if (width) options.width = width;
             if (height) options.height = height;
-
-            console.log('rebuild', options);
 
             board().innerHTML = BgDiagram.fromXgid(input.value, options);
         }
@@ -219,6 +224,9 @@
                 svgString = removeDominantBaselineFromSvg(svgString);
             }
 
+            const viewBox = svgElement.getAttribute("viewBox").split(" ").map(Number);
+            const [viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight] = viewBox;
+
             // Create a Blob from the SVG string
             const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
             const url = URL.createObjectURL(svgBlob);
@@ -238,10 +246,10 @@
             const img = new Image();
             img.onload = () => {
                 const canvas = document.createElement('canvas');
-                canvas.width = svgElement.clientWidth;
-                canvas.height = svgElement.clientHeight;
+                canvas.width = viewBoxWidth;
+                canvas.height = viewBoxHeight;
                 const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0);
+                ctx.drawImage(img, 0, 0, viewBoxWidth, viewBoxHeight);
 
                 // Copy to clipboard
                 if (toClipboard) {
