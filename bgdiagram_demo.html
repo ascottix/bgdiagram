@@ -1,3 +1,8 @@
+<!--
+    Demo page for BgDiagram
+    Copyright (c) 2024-2025 Alessandro Scotti
+    MIT License
+-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -115,56 +120,110 @@
         }
 
         function themeChanged(select) {
-            // Refresh SVG (downloading an image destroys the SVG CSS, so themes won't work)
-            xgidChanged();
-
             board().className = select.value;
+        }
+
+        function rebuildDiagram(width, height) {
+            const input = document.getElementById('xgid');
+            const options = getDiagramOptions();
+
+            if (width) options.width = width;
+            if (height) options.height = height;
+
+            console.log('rebuild', options);
+
+            board().innerHTML = BgDiagram.fromXgid(input.value, options);
         }
 
         function positionChanged() {
             const select = document.getElementById('position');
             const xgid = document.getElementById('xgid');
             xgid.value = select.value;
-            xgidChanged();
+            rebuildDiagram();
+        }
+
+        function getDiagramOptions() {
+            const homeOnLeft = document.getElementById('flipx').checked;
+            const swapColors = document.getElementById('swapcolors').checked;
+
+            return { homeOnLeft, swapColors };
         }
 
         function xgidChanged() {
-            const input = document.getElementById('xgid');
-            const homeOnLeft = document.getElementById('flipx').checked;
-            const swapColors = document.getElementById('swapcolors').checked;
-            board().innerHTML = BgDiagram.fromXgid(input.value, { homeOnLeft, swapColors });
+            rebuildDiagram();
         }
 
-        const ExportedStyles = ['dominant-baseline', 'fill', 'fill-opacity', 'font-family', 'font-size', 'font-weight', 'stroke', 'stroke-opacity', 'stroke-width', 'text-anchor', 'transform'];
-        const ExportedStylesIncludes = ExportedStyles.reduce((acc, style) => ({ ...acc, [style]: true }), {});
-
         function inlineStyles(svgElement) {
+            const exportedStyles = BgDiagram.newBuilder().getUsedCssStyles();
             const elements = svgElement.querySelectorAll('*');
 
             elements.forEach(element => {
                 const computedStyles = window.getComputedStyle(element);
                 for (let property of computedStyles) {
-                    if (!ExportedStylesIncludes[property]) continue;
+                    // Skip unused properties, this saves a huge amount of markup
+                    if (!exportedStyles.has(property)) continue;
+
+                    // Get property value
                     const value = computedStyles.getPropertyValue(property);
+
+                    // Optimize some properties away, yields another big size reduction (about 40%)
                     if (property == 'transform' && value == 'none') continue;
+                    if (property == 'dominant-baseline' && value == 'auto') continue;
+                    if (property.startsWith('font') && element.tagName != 'text') continue;
+                    if (property.startsWith('text') && element.tagName != 'text') continue;
+                    if (property.endsWith('opacity') && value == '1') continue;
+
+                    // Set the property inline
                     element.style[property] = value;
                 }
+                element.removeAttribute('class'); // No need for classes anymore
             });
         }
 
+        // Convert rgb(r,g,b) patterns into #rrggbb to further reduce the size of the SVG output
+        function rgbToHex(input) {
+            return input.replace(/rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)/g, (match, r, g, b) => {
+                return `#${parseInt(r).toString(16).padStart(2, '0')}${parseInt(g).toString(16).padStart(2, '0')}${parseInt(b).toString(16).padStart(2, '0')}`;
+            });
+        }
+
+        // Remove dominant-baseline from SVG to make it more compatible with some applications
+        function removeDominantBaselineFromSvg(svg) {
+            svg = svg.replace(/dominant-baseline:\s*\w+;/g, '');
+
+            // Move text elements down by 9 units to compensate for the removed dominant-baseline,
+            // this is a bit of a hack but it works for the most common use cases
+            svg = svg.replace(/<text (.*?) y="(.+?)"/g, (match, a, y) => {
+                return `<text ${a} y="${parseInt(y) + 9}"`;
+            });
+
+            return svg;
+        }
+
+        // Download the diagram as an PNG or SVG image
         function downloadImage(toClipboard, asSvg = false) {
-            const svgElement = board().querySelector('svg');
+            // Make a copy of the diagram
+            const diagram = document.getElementById('diagram');
+            diagram.innerHTML = board().querySelector('svg').outerHTML;
+            diagram.className = board().className;
+            const svgElement = diagram.querySelector('svg');
 
             inlineStyles(svgElement); // Inline the CSS styles
 
             const serializer = new XMLSerializer();
-            const svgString = serializer.serializeToString(svgElement);
+            let svgString = rgbToHex(serializer.serializeToString(svgElement)
+                .replaceAll(': ', ':')
+                .replaceAll('; ', ';'));
+
+            if (asSvg && document.getElementById('compatiblesvg').checked) {
+                svgString = removeDominantBaselineFromSvg(svgString);
+            }
+
+            // Create a Blob from the SVG string
+            const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+            const url = URL.createObjectURL(svgBlob);
 
             if (asSvg) {
-                // Create a Blob from the SVG string
-                const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
-                const url = URL.createObjectURL(svgBlob);
-
                 // Trigger download
                 const link = document.createElement('a');
                 link.href = url;
@@ -174,10 +233,6 @@
                 URL.revokeObjectURL(url);
                 return;
             }
-
-            // Create a Blob from the SVG string
-            const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
-            const url = URL.createObjectURL(svgBlob);
 
             // Create an image and draw it on a canvas
             const img = new Image();
@@ -250,19 +305,22 @@
             <option value="XGID=------AA-----A----bb----A-:0:0:1:00:0:0:0:0:10:D13,0-7,0:D6,0-24,0:T16,4-20:T21,4-30">
                 Pip counting trick 2</option>
         </select>
-        <label>Home on left:<input id="flipx" type="checkbox" oninput="xgidChanged()"
+        <label>Home on left:<input id="flipx" type="checkbox" oninput="rebuildDiagram()"
                 aria-label="Place home board on the left"></label>
         <label>Hide pipcount:<input type="checkbox" oninput="toggleHidePipcount()"
                 aria-label="Show or hide the pipcount indicator"></label>
         <label>Hide point numbers:<input type="checkbox" oninput="toggleHidePointNumbers()"
                 aria-label="Show or hide the point number indicator"></label>
-        <label>Swap colors:<input id="swapcolors" type="checkbox" oninput="xgidChanged()"
+        <label>Swap colors:<input id="swapcolors" type="checkbox" oninput="rebuildDiagram()"
                 aria-label="Swap the player colors"></label>
         <label>Solid background:<input type="checkbox" oninput="toggleSolidBackground()"
                 aria-label="Make the background solid or transparent"></label>
         <button onclick="downloadImage(false)" aria-label="Download the board as an image">Download image</button>
         <button onclick="downloadImage(true)" aria-label="Copy the image to clipboard">Copy to clipboard</button>
         <button onclick="downloadImage(true, true)" aria-label="Download the board image as SVG">Download SVG</button>
+        <label title="Try to check this option if your application cannot display the standard SVG correctly">More
+            compatible SVG:<input id="compatiblesvg" type="checkbox"
+                aria-label="Generate less precise but more compatible SVG"></label>
 
         <!-- Link to GitHub -->
         <br>
@@ -277,6 +335,9 @@
 
     <!-- Board container -->
     <div id="board" class="bgdiagram__theme--marina"></div>
+
+    <!-- Hidden container for downloading the diagram -->
+    <div id="diagram" style="visibility: hidden;"></div>
 
     <script>
         positionChanged();

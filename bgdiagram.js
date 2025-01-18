@@ -203,7 +203,7 @@ function BgDiagramBuilder(options) {
 
     // Add text to specified position
     function addText(x, y, text, mod) {
-        addSvg(`<text x="${x}" y="${y+(options.textOffsetY || 0)}" class="${bem('text', mod)}">${text}</text>`);
+        addSvg(`<text x="${x}" y="${y}" class="${bem('text', mod)}">${text}</text>`);
     }
 
     // Add an arrow
@@ -317,6 +317,10 @@ function BgDiagramBuilder(options) {
         addSvg(`<circle cx="${x}" cy="${y}" r="${r}" class="${bem('checker', 'turn '+getPlayerClass(player))}" />`);
     }
 
+    function getUsedCssStyles() {
+        return new Set(['dominant-baseline', 'fill', 'fill-opacity', 'font-family', 'font-size', 'font-weight', 'stroke', 'stroke-opacity', 'stroke-width', 'text-anchor', 'transform']);
+    }
+
     // Close the board and return the generated SVG
     function close() {
         addSvg(`</svg>`);
@@ -333,8 +337,8 @@ function BgDiagramBuilder(options) {
         attrs.push('aria-label="Diagram of a backgammon game position"');
 
         // Width and height
-        options.width && attrs.push(`width="${options.width}"`);
-        options.height && attrs.push(`height="${options.height}"`);
+        options.width && attrs.push(`width="${options.width}"`.replace('#', viewAreaWidth));
+        options.height && attrs.push(`height="${options.height}"`.replace('#', fullBoardHeight));
 
         // Class names
         const classes = options.classNames || [];
@@ -361,6 +365,7 @@ function BgDiagramBuilder(options) {
         getBarPosition,
         getOffPosition,
         getCheckerCenter,
+        getUsedCssStyles,
         addArrow,
         addCheckers,
         addCheckersOffboard,
