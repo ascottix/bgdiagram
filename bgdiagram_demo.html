@@ -104,8 +104,9 @@
             }
         }
     </style>
-    <script src="bgdiagram.js"></script>
-    <script>
+    <script type="module">
+        import { BgDiagram } from './bgdiagram.js';
+
         function board() {
             return document.getElementById('board');
         }
@@ -276,6 +277,19 @@
             };
             img.src = url;
         }
+
+        window.positionChanged = positionChanged;
+        window.rebuildDiagram = rebuildDiagram;
+        window.toggleHidePipcount = toggleHidePipcount;
+        window.toggleHidePointNumbers = toggleHidePointNumbers;
+        window.toggleSolidBackground = toggleSolidBackground;
+        window.scaleChanged = scaleChanged;
+        window.themeChanged = themeChanged;
+        window.downloadImage = downloadImage;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            positionChanged();
+        });
     </script>
 </head>
 
@@ -346,10 +360,6 @@
 
     <!-- Hidden container for downloading the diagram -->
     <div id="diagram" style="visibility: hidden;"></div>
-
-    <script>
-        positionChanged();
-    </script>
 </body>
 
 </html>

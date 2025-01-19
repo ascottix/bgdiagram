@@ -383,7 +383,7 @@ function BgDiagramBuilder(options) {
     });
 }
 
-class BgDiagram {
+export class BgDiagram {
     static newBuilder(options) {
         return BgDiagramBuilder(options);
     }
@@ -567,8 +567,4 @@ class BgDiagram {
         // Return SVG
         return bgb.close();
     }
-}
-
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = BgDiagram; // Export for Node.js
 }

@@ -6,6 +6,20 @@ It comes with a low level API (BgDiagramBuilder) and a high level component (BgD
 
 You can [try an interactive version here](https://ascottix.github.io/bgdiagram/bgdiagram_demo.html).
 
+## Usage
+
+Import `BgDiagram` and use the static method `fromXgid` to convert an XGID position into SVG:
+
+```js
+import { BgDiagram } from 'bgdiagram.js';
+
+const svg = BgDiagram.fromXgid(
+    'XGID=-b----E-C---eE---c-e----B-:0:0:1:00:0:0:0:0:10',
+    { homeOnLeft: true });
+```
+
+See below for the extended XGID syntax and more options.
+
 ## Annotations
 
 Annotations can add arrows, text and shapes to a diagram.
