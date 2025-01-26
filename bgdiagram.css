@@ -115,3 +115,8 @@
     font-size: 3em;
     stroke-width: 2px;
 }
+
+.bgdiagram__point-overlay {
+    fill: black;
+    fill-opacity: 50%;
+}

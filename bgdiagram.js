@@ -3,7 +3,8 @@
     Copyright (c) 2024-2025 Alessandro Scotti
     MIT License
 */
-const CheckerSize = 50;
+const CheckerRadius = 25;
+const CheckerSize = CheckerRadius * 2;
 const BorderWidth = 2;
 
 /*
@@ -26,7 +27,7 @@ function BgDiagramBuilder(options) {
     const boardHeight = 2 * pointHeight + pointGap;
     const barWidth = CheckerSize + 2 * BorderWidth;
     const sideWidth = barWidth;
-    const textAreaHeight = CheckerSize / 2;
+    const textAreaHeight = CheckerRadius;
     const fullBoardWidth = 2 * sideWidth + 2 * boardWidth + barWidth + 2;
     const fullBoardHeight = boardHeight + 2 * BorderWidth + textAreaHeight * 2;
     const viewAreaWidth = fullBoardWidth + BorderWidth * 2;
@@ -67,8 +68,8 @@ function BgDiagramBuilder(options) {
     // - 1 to 24 are the standard points
     // - 0 is White's bar
     // - 25 is Black's bar
-    // - PosOffWhite is the (borne) off place for White
-    // - PosOffBlack is the (borne) off place for Black
+    // - PosOffWhite is the place for White's checkers after bearoff
+    // - PosOffBlack is the place for Black's checkers after bearoff
     function getCheckerCenter(pos, height) {
         let cx = 0;
         let cy0 = pointHeight - 1 - BorderWidth / 2;
@@ -81,14 +82,14 @@ function BgDiagramBuilder(options) {
         else if (pos % 25 == 0) {
             // Bar
             edge = pos ? -1 : +1;
-            cy0 -= CheckerSize / 2;
+            cy0 -= CheckerRadius;
         } else {
             pos = getPointPosition(pos);
 
             // Standard point
             const side = (pos >= 7 && pos <= 18) ? -1 : +1; // Left or right board
             edge = (pos <= 12) ? 1 : -1; // Bottom or top edge
-            cx = (pos <= 12 ? 6 - pos : pos - 19) * CheckerSize + side * (barWidth / 2 + BorderWidth) + CheckerSize / 2;
+            cx = (pos <= 12 ? 6 - pos : pos - 19) * CheckerSize + side * (barWidth / 2 + BorderWidth) + CheckerRadius;
         }
 
         const cy = edge * (cy0 - height * CheckerSize);
@@ -168,9 +169,9 @@ function BgDiagramBuilder(options) {
         const sy = edge * pointGap / 2;
         const ey = sy + edge * (pointHeight - 1);
 
-        addSvg(`<polygon points="${x},${ey} ${x + CheckerSize},${ey} ${x + CheckerSize / 2},${sy}" class="${bem('point', pos % 2 ? 'odd' : 'even')}" />`);
+        addSvg(`<polygon points="${x},${ey} ${x + CheckerSize},${ey} ${x + CheckerRadius},${sy}" class="${bem('point', pos % 2 ? 'odd' : 'even')}" />`);
 
-        addText(x + CheckerSize / 2, ey + edge * CheckerSize * 0.3, getPointPosition(pos), 'point');
+        addText(x + CheckerRadius, ey + edge * CheckerSize * 0.3, getPointPosition(pos), 'point');
     }
 
     // Draw an empty board
@@ -232,6 +233,13 @@ function BgDiagramBuilder(options) {
         addSvg(`<polygon points="${points}" class="${bem(className, mod)}" />`);
     }
 
+    // Add a point overlay
+    function addPointOverlay(point, mod) {
+        const [cx, cy] = getCheckerCenter(point, 0);
+
+        addSvg(`<rect x="${cx - CheckerRadius}" y="${Math.min(cy - CheckerRadius, 0)}" width="${CheckerSize}" height="${boardHeight / 2 - BorderWidth - (cx % 25 ? 0 : CheckerRadius)}" class="${bem('point-overlay', mod)}" />`);
+    }
+
     // Add checker to specific point (0 or 25 is the bar)
     function addCheckers(player, point, count) {
         const CheckerClass = 'checker';
@@ -241,7 +249,7 @@ function BgDiagramBuilder(options) {
         for (let c = 0; c < count; c++) {
             const [cx, cy] = getCheckerCenter(point, c);
 
-            addSvg(`<circle cx="${cx}" cy="${cy}" r="${CheckerSize / 2 - BorderWidth / 2 - 0.25}" class="${bem(CheckerClass, player)}" />`);
+            addSvg(`<circle cx="${cx}" cy="${cy}" r="${CheckerRadius - BorderWidth / 2 - 0.25}" class="${bem(CheckerClass, player)}" />`);
 
             // If too many checkers, show count and exit
             if (c == (maxcount - 1) && count > maxcount) {
@@ -314,7 +322,7 @@ function BgDiagramBuilder(options) {
         const x = centerBearoffSide;
         const y = player * (boardHeight / 2 + BorderWidth * 2 + r);
 
-        addSvg(`<circle cx="${x}" cy="${y}" r="${r}" class="${bem('checker', 'turn '+getPlayerClass(player))}" />`);
+        addSvg(`<circle cx="${x}" cy="${y}" r="${r}" class="${bem('checker', 'turn ' + getPlayerClass(player))}" />`);
     }
 
     function getUsedCssStyles() {
@@ -374,6 +382,7 @@ function BgDiagramBuilder(options) {
         addDoubleArrow,
         addPipsCount,
         addPlayerOnTurnIndicator,
+        addPointOverlay,
         addPolygon,
         addScore,
         addSvg,
@@ -426,9 +435,6 @@ export class BgDiagram {
 
         bgb.addCheckersOffboard(White, 15 - checkers[White]);
         bgb.addCheckersOffboard(Black, 15 - checkers[Black]);
-
-        bgb.addPipsCount(White, pips[White]);
-        bgb.addPipsCount(Black, checkers[Black] * 25 - pips[Black]);
 
         // Cube
         const cubeValue = token[1] || 6; // Defaults to 2^6=64
@@ -557,12 +563,17 @@ export class BgDiagram {
         }
 
         // Dice
-        const diceValue = token[4];
+        const d1 = Math.floor(token[4] / 10);
+        const d2 = token[4] % 10;
 
-        if (diceValue >= 11 && diceValue <= 66) {
-            bgb.addDice(player, Math.floor(diceValue / 10), 0);
-            bgb.addDice(player, diceValue % 10, 1);
+        if (d1 >= 1 && d1 <= 6 && d2 >= 1 && d2 <= 6) {
+            bgb.addDice(player, d1, 0);
+            bgb.addDice(player, d2, 1);
         }
+
+        // Pips count
+        bgb.addPipsCount(White, pips[White]);
+        bgb.addPipsCount(Black, checkers[Black] * 25 - pips[Black]);
 
         // Return SVG
         return bgb.close();
