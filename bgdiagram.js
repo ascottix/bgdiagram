@@ -169,7 +169,7 @@ function BgDiagramBuilder(options) {
         const sy = edge * pointGap / 2;
         const ey = sy + edge * (pointHeight - 1);
 
-        addSvg(`<polygon points="${x},${ey} ${x + CheckerSize},${ey} ${x + CheckerRadius},${sy}" class="${bem('point', pos % 2 ? 'odd' : 'even')}" />`);
+        addSvg(`<polygon points="${x},${ey} ${x + CheckerSize},${ey} ${x + CheckerRadius},${sy + edge * 25}" class="${bem('point', pos % 2 ? 'odd' : 'even')}" />`);
 
         addText(x + CheckerRadius, ey + edge * CheckerSize * 0.3, getPointPosition(pos), 'point');
     }
@@ -249,7 +249,7 @@ function BgDiagramBuilder(options) {
         for (let c = 0; c < count; c++) {
             const [cx, cy] = getCheckerCenter(point, c);
 
-            addSvg(`<circle cx="${cx}" cy="${cy}" r="${CheckerRadius - BorderWidth / 2 - 0.25}" class="${bem(CheckerClass, player)}" />`);
+            addSvg(`<circle cx="${cx}" cy="${cy}" r="${CheckerRadius - BorderWidth / 2 - 0.1}" class="${bem(CheckerClass, player)}" />`);
 
             // If too many checkers, show count and exit
             if (c == (maxcount - 1) && count > maxcount) {
