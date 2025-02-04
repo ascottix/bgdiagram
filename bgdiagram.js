@@ -170,8 +170,19 @@ function BgDiagramBuilder(options) {
         const ey = sy + edge * (pointHeight - 1);
 
         addSvg(`<polygon points="${x},${ey} ${x + CheckerSize},${ey} ${x + CheckerRadius},${sy + edge * 25}" class="${bem('point', pos % 2 ? 'odd' : 'even')}" />`);
+    }
 
-        addText(x + CheckerRadius, ey + edge * CheckerSize * 0.3, getPointPosition(pos), 'point');
+    function drawPointNumber(pos, number) {
+        const edge = (pos <= 12) ? 1 : -1; // Bottom or top edge
+        const [cx, cy] = getCheckerCenter(pos, 0);
+        addText(cx, cy + edge * CheckerSize * 0.82, number, 'point');
+    }
+
+    function addPointNumbers(player) {
+        for (let p = 1; p <= 24; p++) {
+            const number = getPointPosition(p);
+            drawPointNumber(p, player == White ? number : 25 - number);
+        }
     }
 
     // Draw an empty board
@@ -382,6 +393,7 @@ function BgDiagramBuilder(options) {
         addDoubleArrow,
         addPipsCount,
         addPlayerOnTurnIndicator,
+        addPointNumbers,
         addPointOverlay,
         addPolygon,
         addScore,
@@ -446,6 +458,7 @@ export class BgDiagram {
         const player = token[3];
 
         bgb.addPlayerOnTurnIndicator(player);
+        bgb.addPointNumbers(player);
 
         // Match information
         const matchLength = token[8];
