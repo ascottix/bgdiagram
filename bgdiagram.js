@@ -181,7 +181,7 @@ function BgDiagramBuilder(options) {
     function addPointNumbers(player) {
         for (let p = 1; p <= 24; p++) {
             const number = getPointPosition(p);
-            drawPointNumber(p, player == White ? number : 25 - number);
+            drawPointNumber(number, player == White ? number : 25 - number);
         }
     }
 
