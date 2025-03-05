@@ -27,7 +27,7 @@ function BgDiagramBuilder(options) {
     const boardHeight = 2 * pointHeight + pointGap;
     const barWidth = CheckerSize + 2 * BorderWidth;
     const sideWidth = barWidth;
-    const textAreaHeight = CheckerRadius;
+    const textAreaHeight = options.compact ? 0 : CheckerRadius;
     const fullBoardWidth = 2 * sideWidth + 2 * boardWidth + barWidth + 2;
     const fullBoardHeight = boardHeight + 2 * BorderWidth + textAreaHeight * 2;
     const viewAreaWidth = fullBoardWidth + BorderWidth * 2;
@@ -166,7 +166,7 @@ function BgDiagramBuilder(options) {
         const side = (pos >= 7 && pos <= 18) ? -1 : +1; // Left or right board
         const edge = (pos <= 12) ? 1 : -1; // Bottom or top edge
         const x = (pos <= 12 ? 6 - pos : pos - 19) * CheckerSize + side * (barWidth / 2 + BorderWidth);
-        const sy = edge * pointGap / 2;
+        const sy = edge * (pointGap / 2 + 1);
         const ey = sy + edge * (pointHeight - 1);
 
         addSvg(`<polygon points="${x},${ey} ${x + CheckerSize},${ey} ${x + CheckerRadius},${sy + edge * 25}" class="${bem('point', pos % 2 ? 'odd' : 'even')}" />`);
@@ -259,8 +259,9 @@ function BgDiagramBuilder(options) {
         // Draw the checker stack
         for (let c = 0; c < count; c++) {
             const [cx, cy] = getCheckerCenter(point, c);
+            const pointInfo = options.addPointInfo ? `data-pt="${point}:${c}" ` : '';
 
-            addSvg(`<circle cx="${cx}" cy="${cy}" r="${CheckerRadius - BorderWidth / 2 - 0.1}" class="${bem(CheckerClass, player)}" />`);
+            addSvg(`<circle ${pointInfo}cx="${cx}" cy="${cy}" r="${CheckerRadius - BorderWidth / 2 - 0.1}" class="${bem(CheckerClass, player)}" />`);
 
             // If too many checkers, show count and exit
             if (c == (maxcount - 1) && count > maxcount) {
@@ -304,22 +305,31 @@ function BgDiagramBuilder(options) {
         count && addSvg(`<text x="${x}" y="${y - player * count * vstep}" class="${bem('text', 'offboard')}">${count}</text>`);
     }
 
+    // Add the Crawford indicator
+    function addCrawfordIndicator() {
+        // Nothing for now
+        const cx = centerCubeSide;
+
+        addText(cx, -10, 'CRAW', 'crawford');
+        addText(cx, +10, 'FORD', 'crawford');
+    }
+
     // Add the cube
-    function addCube(player, value) {
+    function addCube(player, value, mode) {
         const size = Math.round(CheckerSize * 0.4);
         const cx = centerCubeSide;
-        const cy = player * (pointHeight - CheckerSize * 0.3 - size);
+        const cy = player * (pointHeight + (mode ? 1 : -1) * CheckerSize * 0.3 - size);
 
         addSvg(`<rect x="${cx - size}" y="${cy - size}" width="${size * 2}" height="${size * 2}" ry="4" class="${bem('cube')}"/>`);
-        addText(cx, cy, value);
+        addText(cx, cy, value, 'cube');
     }
 
     // Add a player score
-    function addScore(player, score, matchlen) {
+    function addScore(player, score) {
         const x = centerCubeSide;
         const y = player * (pointHeight + CheckerSize * 0.2);
 
-        addText(x, y, `${score}/${matchlen}`, `${getPlayerClass(player)} score${(matchlen > 10) ? ' small' : ''}`);
+        addText(x, y, score, `${getPlayerClass(player)} score${(score.length > 3) ? ' small' : ''}`);
     }
 
     // Add the pips count
@@ -328,10 +338,10 @@ function BgDiagramBuilder(options) {
     }
 
     // Add an indicator to show which player is to play
-    function addPlayerOnTurnIndicator(player) {
+    function addPlayerOnTurnIndicator(player, mode) {
         const r = CheckerSize / 5;
-        const x = centerBearoffSide;
-        const y = player * (boardHeight / 2 + BorderWidth * 2 + r);
+        const x = mode ? 0 : centerBearoffSide;
+        const y = player * (mode ? pointHeight + CheckerSize * 0.1 : boardHeight / 2 + BorderWidth * 2 + r);
 
         addSvg(`<circle cx="${x}" cy="${y}" r="${r}" class="${bem('checker', 'turn ' + getPlayerClass(player))}" />`);
     }
@@ -362,8 +372,6 @@ function BgDiagramBuilder(options) {
         // Class names
         const classes = options.classNames || [];
 
-        classes.push(BemMain);
-
         attrs.push(`class="${classes.join(' ')}"`);
 
         // Clear and reinitialize the SVG buffer
@@ -388,6 +396,7 @@ function BgDiagramBuilder(options) {
         addArrow,
         addCheckers,
         addCheckersOffboard,
+        addCrawfordIndicator,
         addCube,
         addDice,
         addDoubleArrow,
@@ -410,7 +419,7 @@ export class BgDiagram {
     }
 
     static fromXgid(xgid, options) {
-        const bgb = BgDiagramBuilder(options);
+        const bgb = options.builder || BgDiagramBuilder(options);
 
         const White = bgb.White;
         const Black = bgb.Black;
@@ -448,24 +457,30 @@ export class BgDiagram {
         bgb.addCheckersOffboard(White, 15 - checkers[White]);
         bgb.addCheckersOffboard(Black, 15 - checkers[Black]);
 
-        // Cube
-        const cubeValue = token[1] || 6; // Defaults to 2^6=64
-        const cubePosition = token[2];
-
-        bgb.addCube(cubePosition, 1 << cubeValue);
-
         // Turn
         const player = token[3];
 
-        bgb.addPlayerOnTurnIndicator(player);
-        bgb.addPointNumbers(player);
+        bgb.addPlayerOnTurnIndicator(player, options.compact ? 1 : 0);
+        !options.compact && bgb.addPointNumbers(player);
 
         // Match information
         const matchLength = token[8];
 
-        if (matchLength > 0) {
-            bgb.addScore(White, token[5], matchLength);
-            bgb.addScore(Black, token[6], matchLength);
+        if (matchLength > 0 && !options.compact) {
+            const scoreWhite = options.scoreAsAway ? `${matchLength - token[5]}a` : `${token[5]}⧸${matchLength}`;
+            const scoreBlack = options.scoreAsAway ? `${matchLength - token[6]}a` : `${token[6]}⧸${matchLength}`;
+            bgb.addScore(White, scoreWhite);
+            bgb.addScore(Black, scoreBlack);
+        }
+
+        // Cube
+        const cubeValue = token[1] || 6; // Defaults to 2^6=64
+        const cubePosition = token[2];
+
+        if (matchLength > 0 && token[7]) {
+            bgb.addCrawfordIndicator();
+        } else {
+            bgb.addCube(cubePosition, 1 << cubeValue, options.compact ? 1 : 0);
         }
 
         // Annotation support functions
@@ -482,7 +497,7 @@ export class BgDiagram {
 
             const ann = movelist.match(/([!?]+)$/);
             if (ann) {
-                arrowmod = { '??': 'blunder', '?': 'error', '!': 'good', '!!': 'best' }[ann[0]];
+                arrowmod = { '??': 'blunder', '?': 'error', '?!': 'dubious', '!': 'good', '!!': 'best' }[ann[0]];
                 movelist = movelist.slice(0, -ann[0].length);
             }
 
@@ -585,8 +600,8 @@ export class BgDiagram {
         }
 
         // Pips count
-        bgb.addPipsCount(White, pips[White]);
-        bgb.addPipsCount(Black, checkers[Black] * 25 - pips[Black]);
+        !options.compact && bgb.addPipsCount(White, pips[White]);
+        !options.compact && bgb.addPipsCount(Black, checkers[Black] * 25 - pips[Black]);
 
         // Return SVG
         return bgb.close();

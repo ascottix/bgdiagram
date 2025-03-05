@@ -84,6 +84,7 @@ The diagram builder supports the following options:
 - height: diagram height (default: not set)
 - homeOnLeft: if true, the home/bearoff side is on the left (default: false)
 - swapColors: if true, the colors of the player checkers are swapped
+- compact: if true, the point numbers are not visible
 
 Width and height can be numbers (e.g. 500) or strings (e.g. '100%'). It is often better to leave them unset and use CSS to control the size of the SVG element.
 

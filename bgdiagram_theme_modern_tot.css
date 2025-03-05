@@ -1,78 +1,44 @@
 /* BgDiagram theme inspired by marine colors */
 .bgdiagram__theme--modern-tot {
-    .bgdiagram__board {
-        fill: #E0E8D0;
-    }
+    --board-background: #E0E8D0;
+    --board-frame-fill: #355E3B;
+    --board-frame-stroke: #355E3B;
 
-    .bgdiagram__board-frame {
-        fill: #355E3B;
-        stroke: #355E3B;
-        stroke-width: 4px;
-    }
+    --checker-white-fill: #B89B72;
+    --checker-black-fill: #EFE4D8;
 
-    .bgdiagram__board-frame--nofill {
-        fill: none;
-    }
+    --cube-fill: #e7d690;
 
-    .bgdiagram__checker--white {
-        fill: #B89B72;
-    }
+    --dice-white-fill: #B89B72;
+    --dice-white-stroke: #323434;
+    --dice-dot-white-fill: #121314;
+    --dice-black-fill: #EFE4D8;
+    --dice-dot-black-fill: #323434;
 
-    .bgdiagram__checker--black {
-        fill: #EFE4D8;
-    }
+    --point-odd-fill: #A8B89F;
+    --point-even-fill: #D4A373;
+    --point-odd-stroke: #211f2c;
+    --point-even-stroke: #323434;
 
-    .bgdiagram__cube {
-        fill: #e7d690;
-        stroke: black;
-        stroke-width: 3px;
-    }
+    --text-color: white;
+    --text-annotation-color: deepskyblue;
+    --text-crawford-color: white;
 
-    .bgdiagram__dice {
-        fill: #B89B72;
-        stroke: #323434;
-    }
+    --arrow-fill: black;
+    --arrow-stroke: white;
+    --arrow-annotation-fill: deepskyblue;
+    --arrow-best-fill: lime;
+    --arrow-best-stroke: black;
+    --arrow-error-fill: gold;
+    --arrow-error-stroke: black;
+    --arrow-blunder-fill: red;
+    --arrow-blunder-stroke: black;
 
-    .bgdiagram__dice-dot {
-        fill: #121314;
-    }
-
-    .bgdiagram__dice--black {
-        fill: #EFE4D8;
-    }
-
-    .bgdiagram__dice-dot--black {
-        fill: #323434;
-    }
-
-    .bgdiagram__point--odd {
-        fill: #A8B89F;
-        stroke: #211f2c;
-    }
-
-    .bgdiagram__point--even {
-        fill: #D4A373;
-        stroke: #323434;
-    }
+    --polygon-stroke: deepskyblue;
 
     .bgdiagram__text--offboard,
     .bgdiagram__text--score,
     .bgdiagram__text--pipcount {
         fill: #E0E8D0;
-    }
-
-    .bgdiagram__arrow--best {
-        fill: lime;
-        stroke: black;
-    }
-
-    .bgdiagram__arrow--error {
-        fill: gold;
-        stroke: black;
-    }
-
-    .bgdiagram__arrow--blunder {
-        fill: red;
-        stroke: black;
     }
 }

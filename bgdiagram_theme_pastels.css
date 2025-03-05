@@ -1,0 +1,99 @@
+/* BgDiagram themes based on pastel colors and soft contrasts */
+.bgdiagram__theme--serene-sky {
+    --board-background: #A0D8EF;
+    --board-frame-fill: #377DA4;
+    --board-frame-stroke: #377DA4;
+
+    --checker-white-fill: #C1E7FF;
+    --checker-black-fill: #5A92BF;
+
+    --dice-white-fill: #DEF3FF;
+    --dice-black-fill: #377DA4;
+
+    --point-odd-fill: #DEF3FF;
+    --point-even-fill: #377DA4;
+    --point-odd-stroke: none;
+    --point-even-stroke: none;
+
+    --text-color: white;
+    --text-crawford-color: white;
+}
+
+.bgdiagram__theme--petal-pink {
+    --board-background: #F8C8DC;
+    --board-frame-fill: #BF6F82;
+    --board-frame-stroke: #BF6F82;
+
+    --checker-white-fill: #FFD1E3;
+    --checker-black-fill: #D48A9C;
+
+    --dice-white-fill: #FFE4EC;
+    --dice-black-fill: #BF6F82;
+
+    --point-odd-fill: #FFE4EC;
+    --point-even-fill: #BF6F82;
+    --point-odd-stroke: none;
+    --point-even-stroke: none;
+
+    --text-color: white;
+    --text-crawford-color: white;
+}
+
+.bgdiagram__theme--aqua-green {
+    --board-background: #7FC8A9;
+    --board-frame-fill: #317A60;
+    --board-frame-stroke: #317A60;
+
+    --checker-white-fill: #AFE1C2;
+    --checker-black-fill: #488C71;
+
+    --dice-white-fill: #D8F3DC;
+    --dice-black-fill: #317A60;
+
+    --point-odd-fill: #D8F3DC;
+    --point-even-fill: #317A60;
+    --point-odd-stroke: none;
+    --point-even-stroke: none;
+
+    --text-color: white;
+    --text-crawford-color: white;
+}
+
+.bgdiagram__theme--soft-lavender {
+    --board-background: #B288C0;
+    --board-frame-fill: #6D3B7E;
+    --board-frame-stroke: #6D3B7E;
+
+    --checker-white-fill: #D1B3E0;
+    --checker-black-fill: #8654A1;
+
+    --dice-white-fill: #EADAF2;
+    --dice-black-fill: #6D3B7E;
+
+    --point-odd-fill: #EADAF2;
+    --point-even-fill: #6D3B7E;
+    --point-odd-stroke: none;
+    --point-even-stroke: none;
+
+    --text-color: white;
+    --text-crawford-color: white;
+}
+
+.bgdiagram__theme--delicate-coral {
+    --board-background: #F08A5D;
+    --board-frame-fill: #B53A2E;
+    --board-frame-stroke: #B53A2E;
+    --checker-white-fill: #FFB999;
+    --checker-black-fill: #DD6B4D;
+
+    --dice-white-fill: #FFCDB2;
+    --dice-black-fill: #B53A2E;
+
+    --point-odd-fill: #FFCDB2;
+    --point-even-fill: #B53A2E;
+    --point-odd-stroke: none;
+    --point-even-stroke: none;
+
+    --text-color: white;
+    --text-crawford-color: white;
+}

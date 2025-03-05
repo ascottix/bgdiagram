@@ -12,10 +12,10 @@
     <title>BgDiagram demo gallery</title>
     <link rel="stylesheet" href="bgdiagram.css">
     <link rel="stylesheet" href="bgdiagram_theme_marina.css">
-    <link rel="stylesheet" href="bgdiagram_theme_mountain.css">
     <link rel="stylesheet" href="bgdiagram_theme_patriot.css">
     <link rel="stylesheet" href="bgdiagram_theme_modern_tot.css">
     <link rel="stylesheet" href="bgdiagram_theme_fluo.css">
+    <link rel="stylesheet" href="bgdiagram_theme_pastels.css">
     <style>
         body {
             background-color: lightgray;
@@ -50,6 +50,12 @@
 
         .solid-background .bgdiagram__background {
             fill: white;
+        }
+
+        .move-preview .bgdiagram__dice,
+        .move-preview .bgdiagram__dice-dot {
+            fill-opacity: .5;
+            stroke-opacity: .5;
         }
 
         #header {
@@ -128,7 +134,7 @@
         }
 
         function themeChanged(select) {
-            board().className = select.value;
+            board().className = `bgdiagram ${select.value}`;
         }
 
         function rebuildDiagram(width, height) {
@@ -290,6 +296,13 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             positionChanged();
+
+            document.getElementById('board').addEventListener('click', (event) => {
+                const target = event.target;
+                const pt = target.getAttribute('data-pt');
+                const [point, height] = pt.split(':').map(Number);
+                console.log(point, height);
+            });
         });
     </script>
 </head>
@@ -308,16 +321,20 @@
             <option value="bgdiagram__theme--fluo">Fluo</option>
             <option value="bgdiagram__theme--marina" selected>Marina</option>
             <option value="bgdiagram__theme--modern-tot">Modern tone-on-tone</option>
-            <option value="bgdiagram__theme--mountain">Mountain</option>
             <option value="bgdiagram__theme--patriot">Patriot</option>
+            <option value="bgdiagram__theme--delicate-coral">Pastels - Delicate Coral</option>
+            <option value="bgdiagram__theme--aqua-green">Pastels - Aqua Green</option>
+            <option value="bgdiagram__theme--soft-lavender">Pastels - Soft Lavender</option>
+            <option value="bgdiagram__theme--petal-pink">Pastels - Petal Pink</option>
+            <option value="bgdiagram__theme--serene-sky">Pastels - Serene Sky</option>
         </select>
         <label for="position">Preset position:</label>
         <select id="position" oninput="positionChanged()">
             <option value="XGID=-b----E-C---eE---c-e----B-:0:0:1:00:0:0:0:0:10">Start board</option>
-            <option value="XGID=-a-a--E-D---dD---d-e---AA-:0:0:-1:42:0:2:0:7:10">Make the 5 or 4?</option>
+            <option value="XGID=-a-a--E-D---dD---d-e---AA-:0:0:-1:42:1:6:1:7:10" >Make the 5 or 4?</option>
             <option value="XGID=a-a--BCAB--BeB----ce-A--B-:0:0:-1:00:0:0:0:5:10">Is this a cube?</option>
             <option value="XGID=-a---BC-C--AeD---cae----AA:0:0:1:42:0:0:0:0:10">What's the best move?</option>
-            <option value="XGID=-CCCBBA-A------------acac-:1:1:1:63:1:2:0:5:10:8/5,6/off!!">Little bit of everything
+            <option value="XGID=-CCCBBA-A------------acac-:1:1:1:63:1:2:0:5:10:8/5,6/off!!" selected>Little bit of everything
             </option>
             <option value="XGID=-A----------------------d-:0:0:-1:11:0:0:0:0:10:1/off(4)">So close...</option>
             <option value="XGID=-b----E-C---dEa--c-da---B-:0:0:1:31:0:0:0:0:10:8/5,6/5??">A big error</option>
@@ -357,7 +374,7 @@
     </div>
 
     <!-- Board container -->
-    <div id="board" class="bgdiagram__theme--marina"></div>
+    <div id="board" class="bgdiagram bgdiagram__theme--marina"></div>
 
     <!-- Hidden container for downloading the diagram -->
     <div id="diagram" style="visibility: hidden;"></div>

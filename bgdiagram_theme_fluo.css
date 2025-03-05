@@ -1,30 +1,47 @@
 /* BgDiagram fluo theme */
 .bgdiagram__theme--fluo {
-    .bgdiagram__board {
-        fill: black;
-    }
+    --board-background: black;
+    --board-frame-fill: black;
+    --board-frame-stroke: #ca46ac;
 
-    .bgdiagram__board-frame {
-        fill: black;
-        stroke: #ca46ac;
-        stroke-width: 4px;
-    }
+    --checker-white-fill: #cacb01;
+    --checker-black-fill: #2C75FF;
 
-    .bgdiagram__board-frame--nofill {
-        fill: none;
-    }
+    --cube-fill: #fe59d7;
+
+    --dice-white-fill: #cacb01;
+    --dice-black-fill: #2C75FF;
+
+    --point-odd-fill: #ff8c00;
+    --point-even-fill: #06cacb;
+    --point-odd-stroke: #ff8c00;
+    --point-even-stroke: #06cacb;
+
+    --text-color: black;
+    --text-annotation-color: #39ff14;
+    --text-crawford-color: white;
+
+    --arrow-fill: black;
+    --arrow-stroke: white;
+    --arrow-annotation-fill: #39ff14;
+    --arrow-best-fill: #39ff14;
+    --arrow-best-stroke: black;
+    --arrow-error-fill: gold;
+    --arrow-error-stroke: black;
+    --arrow-blunder-fill: #ff073a;
+    --arrow-blunder-stroke: black;
+
+    --polygon-stroke: deepskyblue;
 
     .bgdiagram__checker--white {
-        fill: #cacb01;
         fill-opacity: 80%;
-        stroke:#d2d301;
+        stroke: #d2d301;
         stroke-width: 2.25px;
     }
 
     .bgdiagram__checker--black {
-        fill: #2C75FF;
         fill-opacity: 80%;
-        stroke:#3d81ff;
+        stroke: #3d81ff;
         stroke-width: 2.25px;
     }
 
@@ -34,33 +51,14 @@
         stroke-width: 1px;
     }
 
-    .bgdiagram__cube {
-        fill: #fe59d7;
-    }
-
-    .bgdiagram__dice {
-        fill: #cacb01;
+    .bgdiagram__dice--white,
+    .bgdiagram__dice--black {
         fill-opacity: 90%;
     }
 
-    .bgdiagram__dice-dot {
-        fill: black;
-    }
-
-    .bgdiagram__dice--black {
-        fill: #2C75FF;
-    }
-
-    .bgdiagram__point--odd {
-        fill: #ff8c00;
-        fill-opacity: 30%;
-        stroke: #ff8c00;
-    }
-
+    .bgdiagram__point--odd,
     .bgdiagram__point--even {
-        fill: #06cacb;
         fill-opacity: 30%;
-        stroke: #06cacb;
     }
 
     .bgdiagram__text--offboard,
@@ -69,22 +67,10 @@
         fill: #f0f0f0;
     }
 
-    .bgdiagram__arrow--best {
-        fill: #39ff14;
-        fill-opacity: 80%;
-        stroke: black;
-    }
-
-    .bgdiagram__arrow--error {
-        fill: gold;
-        fill-opacity: 80%;
-        stroke: black;
-    }
-
+    .bgdiagram__arrow--best,
+    .bgdiagram__arrow--error,
     .bgdiagram__arrow--blunder {
-        fill: #ff073a;
         fill-opacity: 80%;
-        stroke: black;
     }
 
     .bgdiagram__polygon {
@@ -92,22 +78,5 @@
         stroke: #39ff14;
         stroke-opacity: 95%;
         stroke-width: 8px;
-    }
-
-    .bgdiagram__polygon--outer {
-        fill: none;
-        stroke: black;
-        stroke-width: 11px;
-    }
-
-    .bgdiagram__text--annotation,
-    .bgdiagram__arrow--annotation {
-        fill: #39ff14;
-        stroke: black;
-    }
-
-    .bgdiagram__text--annotation {
-        font-size: 3em;
-        stroke-width: 2px;
     }
 }

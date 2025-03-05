@@ -1,104 +1,39 @@
 /* BgDiagram theme inspired by marine colors */
 .bgdiagram__theme--marina {
-    .bgdiagram__board {
-        fill: #425064;
-    }
+    --board-background: #425064;
+    --board-frame-fill: #8e6233;
+    --board-frame-stroke: #60391a;
 
-    .bgdiagram__board-frame {
-        fill: #8e6233;
-        stroke: #60391a;
-        stroke-width: 4px;
-    }
+    --checker-white-fill: #e1bd39;
+    --checker-black-fill: #374053;
 
-    .bgdiagram__board-frame--nofill {
-        fill: none;
-    }
+    --cube-fill: #e7d690;
 
-    .bgdiagram__checker--white {
-        fill: #e1bd39;
-    }
+    --dice-white-fill: #ece8e5;
+    --dice-white-stroke: #374053;
+    --dice-dot-white-fill: #211f2c;
+    --dice-black-fill: #211f2c;
+    --dice-black-stroke: #d9d9de;
+    --dice-dot-black-fill: #ece8e5;
 
-    .bgdiagram__checker--black {
-        fill: #374053;
-    }
+    --point-odd-fill: #f7ad3d;
+    --point-even-fill: #d9d9de;
+    --point-odd-stroke: #211f2c;
+    --point-even-stroke: #323434;
 
-    .bgdiagram__cube {
-        fill: #e7d690;
-        stroke: black;
-        stroke-width: 3px;
-    }
+    --text-color: white;
+    --text-annotation-color: deepskyblue;
+    --text-crawford-color: white;
 
-    .bgdiagram__dice {
-        fill: #ece8e5;
-        stroke: #374053;
-    }
+    --arrow-fill: black;
+    --arrow-stroke: white;
+    --arrow-annotation-fill: deepskyblue;
+    --arrow-best-fill: lime;
+    --arrow-best-stroke: black;
+    --arrow-error-fill: gold;
+    --arrow-error-stroke: black;
+    --arrow-blunder-fill: red;
+    --arrow-blunder-stroke: black;
 
-    .bgdiagram__dice-dot {
-        fill: #211f2c;
-    }
-
-    .bgdiagram__dice--black {
-        fill: #211f2c;
-        stroke: #d9d9de;
-    }
-
-    .bgdiagram__dice-dot--black {
-        fill: #ece8e5;
-    }
-
-    .bgdiagram__point--odd {
-        fill: #f7ad3d;
-        stroke: #211f2c;
-    }
-
-    .bgdiagram__point--even {
-        fill: #d9d9de;
-        stroke: #323434;
-    }
-
-    .bgdiagram__text--offboard,
-    .bgdiagram__text--score,
-    .bgdiagram__text--pipcount {
-        fill: white;
-        stroke: #60391a;
-        stroke-width: 1px;
-    }
-
-    .bgdiagram__arrow--best {
-        fill: lime;
-        stroke: black;
-    }
-
-    .bgdiagram__arrow--error {
-        fill: gold;
-        stroke: black;
-    }
-
-    .bgdiagram__arrow--blunder {
-        fill: red;
-        stroke: black;
-    }
-
-    .bgdiagram__polygon {
-        fill: none;
-        stroke: deepskyblue;
-        stroke-width: 8px;
-    }
-
-    .bgdiagram__polygon--outer {
-        fill: none;
-        stroke: black;
-        stroke-width: 11px;
-    }
-
-    .bgdiagram__text--annotation,
-    .bgdiagram__arrow--annotation {
-        fill: deepskyblue;
-        stroke: black;
-    }
-
-    .bgdiagram__text--annotation {
-        font-size: 3em;
-        stroke-width: 2px;
-    }
+    --polygon-stroke: deepskyblue;
 }
