@@ -1,0 +1,289 @@
+/* BgDiagram fluo theme */
+.bgdiagram__theme--fluo {
+    --board-background: black;
+    --board-frame-fill: black;
+    --board-frame-stroke: #ca46ac;
+
+    --checker-white-fill: #cacb01;
+    --checker-black-fill: #2C75FF;
+
+    --cube-fill: #fe59d7;
+
+    --dice-white-fill: #cacb01;
+    --dice-black-fill: #2C75FF;
+
+    --point-odd-fill: #ff8c00;
+    --point-even-fill: #06cacb;
+    --point-odd-stroke: #ff8c00;
+    --point-even-stroke: #06cacb;
+
+    --text-color: black;
+    --text-annotation-color: #39ff14;
+    --text-crawford-color: white;
+
+    --arrow-fill: black;
+    --arrow-stroke: white;
+    --arrow-annotation-fill: #39ff14;
+    --arrow-best-fill: #39ff14;
+    --arrow-best-stroke: black;
+    --arrow-error-fill: gold;
+    --arrow-error-stroke: black;
+    --arrow-blunder-fill: #ff073a;
+    --arrow-blunder-stroke: black;
+
+    --polygon-stroke: deepskyblue;
+
+    .bgdiagram__checker--white {
+        fill-opacity: 80%;
+        stroke: #d2d301;
+        stroke-width: 2.25px;
+    }
+
+    .bgdiagram__checker--black {
+        fill-opacity: 80%;
+        stroke: #3d81ff;
+        stroke-width: 2.25px;
+    }
+
+    .bgdiagram__checker--turn {
+        fill-opacity: 100%;
+        stroke: black;
+        stroke-width: 1px;
+    }
+
+    .bgdiagram__dice--white,
+    .bgdiagram__dice--black {
+        fill-opacity: 90%;
+    }
+
+    .bgdiagram__point--odd,
+    .bgdiagram__point--even {
+        fill-opacity: 30%;
+    }
+
+    .bgdiagram__text--offboard,
+    .bgdiagram__text--score,
+    .bgdiagram__text--pipcount {
+        fill: #f0f0f0;
+    }
+
+    .bgdiagram__arrow--best,
+    .bgdiagram__arrow--error,
+    .bgdiagram__arrow--blunder {
+        fill-opacity: 80%;
+    }
+
+    .bgdiagram__polygon {
+        fill: none;
+        stroke: #39ff14;
+        stroke-opacity: 95%;
+        stroke-width: 8px;
+    }
+}
+
+/* BgDiagram theme inspired by marine colors */
+.bgdiagram__theme--marina {
+    --board-background: #425064;
+    --board-frame-fill: #8e6233;
+    --board-frame-stroke: #60391a;
+
+    --checker-white-fill: #e1bd39;
+    --checker-black-fill: #374053;
+
+    --cube-fill: #e7d690;
+
+    --dice-white-fill: #ece8e5;
+    --dice-white-stroke: #374053;
+    --dice-dot-white-fill: #211f2c;
+    --dice-black-fill: #211f2c;
+    --dice-black-stroke: #d9d9de;
+    --dice-dot-black-fill: #ece8e5;
+
+    --point-odd-fill: #f7ad3d;
+    --point-even-fill: #d9d9de;
+    --point-odd-stroke: none;
+    --point-even-stroke: none;
+
+    --text-color: white;
+    --text-annotation-color: deepskyblue;
+    --text-crawford-color: white;
+
+    --arrow-fill: black;
+    --arrow-stroke: white;
+    --arrow-annotation-fill: deepskyblue;
+    --arrow-best-fill: lime;
+    --arrow-best-stroke: black;
+    --arrow-error-fill: gold;
+    --arrow-error-stroke: black;
+    --arrow-blunder-fill: red;
+    --arrow-blunder-stroke: black;
+
+    --polygon-stroke: deepskyblue;
+}
+
+/* BgDiagram theme inspired by a real board */
+.bgdiagram__theme--mirage {
+    --board-background: #87b0af;
+    --board-frame-fill: #3a5d70;
+    --board-frame-fill: #314D5E;
+    --board-frame-stroke: #273B49;
+
+    --checker-white-fill: #d6caa4;
+    --checker-black-fill: #3a5d70;
+
+    --cube-fill: #99BDBD;
+
+    --dice-white-fill: #d6caa4;
+    --dice-white-stroke: #374053;
+    --dice-dot-white-fill: #211f2c;
+    --dice-black-fill: #355264;
+    --dice-black-stroke: #273B49;
+    --dice-dot-black-fill: #ece8e5;
+
+    --point-odd-fill: #d55621;
+    --point-even-fill: #60191e;
+    --point-odd-stroke: none;
+    --point-even-stroke: none;
+
+    --text-color: white;
+    --text-annotation-color: deepskyblue;
+    --text-crawford-color: white;
+
+    --arrow-fill: black;
+    --arrow-stroke: white;
+    --arrow-annotation-fill: deepskyblue;
+    --arrow-best-fill: lime;
+    --arrow-best-stroke: black;
+    --arrow-error-fill: gold;
+    --arrow-error-stroke: black;
+    --arrow-blunder-fill: red;
+    --arrow-blunder-stroke: black;
+
+    --polygon-stroke: deepskyblue;
+}
+
+/* BgDiagram theme with soft tone-on-tone colors */
+.bgdiagram__theme--modern-tot {
+    --board-background: #E0E8D0;
+    --board-frame-fill: #355E3B;
+    --board-frame-stroke: #355E3B;
+
+    --checker-white-fill: #B89B72;
+    --checker-black-fill: #EFE4D8;
+
+    --cube-fill: #e7d690;
+
+    --dice-white-fill: #B89B72;
+    --dice-white-stroke: #323434;
+    --dice-dot-white-fill: #121314;
+    --dice-black-fill: #EFE4D8;
+    --dice-dot-black-fill: #323434;
+
+    --point-odd-fill: #A8B89F;
+    --point-even-fill: #D4A373;
+    --point-odd-stroke: #211f2c;
+    --point-even-stroke: #323434;
+
+    --text-color: white;
+    --text-annotation-color: deepskyblue;
+    --text-crawford-color: white;
+
+    --arrow-fill: black;
+    --arrow-stroke: white;
+    --arrow-annotation-fill: deepskyblue;
+    --arrow-best-fill: lime;
+    --arrow-best-stroke: black;
+    --arrow-error-fill: gold;
+    --arrow-error-stroke: black;
+    --arrow-blunder-fill: red;
+    --arrow-blunder-stroke: black;
+
+    --polygon-stroke: deepskyblue;
+
+    .bgdiagram__text--offboard,
+    .bgdiagram__text--score,
+    .bgdiagram__text--pipcount {
+        fill: #E0E8D0;
+    }
+}
+
+/* BgDiagram theme inspired by mountain colors */
+.bgdiagram__theme--mountain {
+    --board-background: #2E7D32;
+    --board-frame-fill: #272727;
+    --board-frame-stroke: #121212;
+
+    --cube-fill: #F5E1A4;
+
+    --checker-white-fill: #f8f8f8;
+    --checker-black-fill: #C62828;
+
+    --dice-white-fill: #f8f8f8;
+    --dice-white-stroke: #272727;
+    --dice-dot-white-fill: #121212;
+    --dice-black-fill: #C62828;
+    --dice-black-stroke: #272727;
+    --dice-dot-black-fill: #f8f8f8;
+    --dice-black-fill: #272727;
+    --dice-black-stroke: #121212;
+
+    --point-odd-fill: #F5E1A4;
+    --point-even-fill: #3E2723;
+    --point-odd-stroke: none;
+    --point-even-stroke: none;
+
+    --text-color: white;
+    --text-annotation-color: #F08000;
+    --text-crawford-color: white;
+
+    --arrow-fill: black;
+    --arrow-stroke: white;
+    --arrow-annotation-fill: #F08000;
+    --arrow-best-fill: lime;
+    --arrow-best-stroke: black;
+    --arrow-error-fill: gold;
+    --arrow-error-stroke: black;
+    --arrow-blunder-fill: red;
+    --arrow-blunder-stroke: black;
+
+    --polygon-stroke: #F08000;
+}
+
+/* BgDiagram theme inspired by a real board */
+.bgdiagram__theme--patriot {
+    --board-background: #dbdfe5;
+    --board-frame-fill: #bbbdc0;
+    --board-frame-stroke: #434343;
+
+    --checker-white-fill: #ece8e5;
+    --checker-black-fill: #434343;
+
+    --cube-fill: #e7d690;
+
+    --dice-white-fill: #ece8e5;
+    --dice-white-stroke: #211f2c;
+    --dice-dot-white-fill: #211f2c;
+    --dice-black-fill: #323232;
+    --dice-dot-black-fill: white;
+
+    --point-odd-fill: #48a6ee;
+    --point-even-fill: #f54b3b;
+    --point-odd-stroke: white;
+    --point-even-stroke: white;
+
+    --text-color: black;
+    --text-annotation-color: deepskyblue;
+    --text-crawford-color: white;
+
+    --arrow-fill: black;
+    --arrow-stroke: white;
+    --arrow-annotation-fill: deepskyblue;
+    --arrow-best-fill: lime;
+    --arrow-best-stroke: black;
+    --arrow-error-fill: gold;
+    --arrow-error-stroke: black;
+    --arrow-blunder-fill: red;
+    --arrow-blunder-stroke: black;
+
+    --polygon-stroke: deepskyblue;
+}

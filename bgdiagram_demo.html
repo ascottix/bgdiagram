@@ -11,11 +11,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BgDiagram demo gallery</title>
     <link rel="stylesheet" href="bgdiagram.css">
-    <link rel="stylesheet" href="bgdiagram_theme_marina.css">
-    <link rel="stylesheet" href="bgdiagram_theme_patriot.css">
-    <link rel="stylesheet" href="bgdiagram_theme_modern_tot.css">
-    <link rel="stylesheet" href="bgdiagram_theme_fluo.css">
-    <link rel="stylesheet" href="bgdiagram_theme_pastels.css">
+    <link rel="stylesheet" href="bgdiagram_themes_base.css">
+    <link rel="stylesheet" href="bgdiagram_themes_pastels.css">
     <style>
         body {
             background-color: lightgray;
@@ -317,16 +314,18 @@
         <label for="theme">Theme:</label>
         <select id="theme" oninput="themeChanged(this)"
             aria-label="Select a theme to change the visual appearance of the board">
-            <option value="">Black & white</option>
             <option value="bgdiagram__theme--fluo">Fluo</option>
             <option value="bgdiagram__theme--marina" selected>Marina</option>
+            <option value="bgdiagram__theme--mirage">Mirage</option>
             <option value="bgdiagram__theme--modern-tot">Modern tone-on-tone</option>
+            <option value="">Monochrome</option>
+            <option value="bgdiagram__theme--mountain">Mountain</option>
             <option value="bgdiagram__theme--patriot">Patriot</option>
-            <option value="bgdiagram__theme--delicate-coral">Pastels - Delicate Coral</option>
             <option value="bgdiagram__theme--aqua-green">Pastels - Aqua Green</option>
-            <option value="bgdiagram__theme--soft-lavender">Pastels - Soft Lavender</option>
+            <option value="bgdiagram__theme--delicate-coral">Pastels - Delicate Coral</option>
             <option value="bgdiagram__theme--petal-pink">Pastels - Petal Pink</option>
             <option value="bgdiagram__theme--serene-sky">Pastels - Serene Sky</option>
+            <option value="bgdiagram__theme--soft-lavender">Pastels - Soft Lavender</option>
         </select>
         <label for="position">Preset position:</label>
         <select id="position" oninput="positionChanged()">
