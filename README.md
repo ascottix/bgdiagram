@@ -6,6 +6,18 @@ It comes with a low level API (BgDiagramBuilder) and a high level component (BgD
 
 You can [try an interactive version here](https://ascottix.github.io/bgdiagram/bgdiagram_demo.html).
 
+## Installation
+
+Add the following tags to your HTML:
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ascottix/bgdiagram@v1.0.1/dist/bgdiagram.min.css">
+<script src="https://cdn.jsdelivr.net/gh/ascottix/bgdiagram@v1.0.1/dist/bgdiagram.min.js"></script>
+
+If you want to use the themes, also add the following stylesheet links:
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ascottix/bgdiagram@v1.0.1/dist/bgdiagram_themes_base.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ascottix/bgdiagram@v1.0.1/dist/bgdiagram_themes_pastels.min.css">
+
 ## Usage
 
 Import `BgDiagram` and use the static method `fromXgid` to convert an XGID position into SVG:

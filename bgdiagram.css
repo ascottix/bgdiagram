@@ -146,6 +146,10 @@
     fill: white;
 }
 
+.bgdiagram__text--checker--white {
+    fill: black;
+}
+
 .bgdiagram__text--small {
     font-size: 20px;
 }
