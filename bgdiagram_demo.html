@@ -131,7 +131,8 @@
         }
 
         function themeChanged(select) {
-            board().className = `bgdiagram ${select.value}`;
+            board().classList.forEach(c => c.startsWith('bgdiagram__') && board().classList.remove(c));
+            board().classList.add(select.value);
         }
 
         function rebuildDiagram(width, height) {
@@ -329,20 +330,22 @@
         </select>
         <label for="position">Preset position:</label>
         <select id="position" oninput="positionChanged()">
-            <option value="XGID=-b----E-C---eE---c-e----B-:0:0:1:00:0:0:0:0:10">Start board</option>
-            <option value="XGID=-a-a--E-D---dD---d-e---AA-:0:0:-1:42:1:6:1:7:10" >Make the 5 or 4?</option>
-            <option value="XGID=a-a--BCAB--BeB----ce-A--B-:0:0:-1:00:0:0:0:5:10">Is this a cube?</option>
-            <option value="XGID=-a---BC-C--AeD---cae----AA:0:0:1:42:0:0:0:0:10">What's the best move?</option>
-            <option value="XGID=-CCCBBA-A------------acac-:1:1:1:63:1:2:0:5:10:8/5,6/off!!" selected>Little bit of everything
+            <option value="XGID=-b----E-C---eE---c-e----B-:0:0:1:00:0:0:0:0:6">Start board</option>
+            <option value="XGID=-a-a--E-D---dD---d-e---AA-:0:0:-1:42:1:6:1:7:6">Make the 5 or 4?</option>
+            <option value="XGID=a-a--BCAB--BeB----ce-A--B-:0:0:-1:00:0:0:0:5:6">Is this a cube?</option>
+            <option value="XGID=-a---BC-C--AeD---cae----AA:0:0:1:42:0:0:0:0:6">What's the best move?</option>
+            <option value="XGID=-CCCBBA-A------------acac-:1:1:1:63:1:2:0:5:6:8/5,6/off!!" selected>Little bit of
+                everything
             </option>
-            <option value="XGID=-A----------------------d-:0:0:-1:11:0:0:0:0:10:1/off(4)">So close...</option>
-            <option value="XGID=-b----E-C---dEa--c-da---B-:0:0:1:31:0:0:0:0:10:8/5,6/5??">A big error</option>
-            <option value="XGID=-b----E-C---dEa--c-da---B-:0:0:1:31:0:0:0:0:10:24/23,23/20*!!">A good move</option>
+            <option value="XGID=-A----------------------d-:0:0:-1:11:0:0:0:0:6:1/off(4)">So close...</option>
+            <option value="XGID=-b----E-C---dEa--c-da---B-:0:0:1:31:0:0:0:0:6:8/5,6/5??">A big error</option>
+            <option value="XGID=-b----E-C---dEa--c-da---B-:0:0:1:31:0:0:0:0:6:24/23,23/20*!!">A good move</option>
             <option
-                value="XGID=---ABCD------------bbbbb--:0:0:1:00:0:0:0:0:10:P6,0-6,3-3,0:P19,0-19,1-23,1-23,0:A5,4-5,3:A21,3-21,2:T0,4.5-Marked point x 10">
+                value="XGID=---ABCD------------bbbbb--:0:0:1:00:0:0:0:0:6:P6,0-6,3-3,0:P19,0-19,1-23,1-23,0:A5,4-5,3:A21,3-21,2:T0,4.5-Marked point x 10">
                 Pip counting trick</option>
-            <option value="XGID=------AA-----A----bb----A-:0:0:1:00:0:0:0:0:10:D13,0-7,0:D6,0-24,0:T16,4-20:T21,4-30">
+            <option value="XGID=------AA-----A----bb----A-:0:0:1:00:0:0:0:0:6:D13,0-7,0:D6,0-24,0:T16,4-20:T21,4-30">
                 Pip counting trick 2</option>
+            <option value="XGID=fa----B-C---b----c-b----BF:1:-1:1:11:7:11:0:15:6">Test</option>
         </select>
         <label>Home on left:<input id="flipx" type="checkbox" oninput="rebuildDiagram()"
                 aria-label="Place home board on the left"></label>

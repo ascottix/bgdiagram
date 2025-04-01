@@ -151,7 +151,7 @@
 }
 
 .bgdiagram__text--small {
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .bgdiagram__text--crawford {
@@ -183,6 +183,16 @@
     fill: var(--arrow-fill);
     stroke: var(--arrow-stroke);
     stroke-width: 2px;
+}
+
+.bgdiagram__arrow--white {
+    fill: var(--checker-white-fill);
+    stroke: var(--checker-white-stroke);
+}
+
+.bgdiagram__arrow--black {
+    fill: var(--checker-black-fill);
+    stroke: var(--checker-black-stroke);
 }
 
 .bgdiagram__arrow--best {

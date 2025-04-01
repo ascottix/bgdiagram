@@ -10,13 +10,13 @@ You can [try an interactive version here](https://ascottix.github.io/bgdiagram/b
 
 Add the following tags to your HTML:
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ascottix/bgdiagram@v1.0.1/dist/bgdiagram.min.css">
-<script src="https://cdn.jsdelivr.net/gh/ascottix/bgdiagram@v1.0.1/dist/bgdiagram.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ascottix/bgdiagram@v1.0.2/dist/bgdiagram.min.css">
+<script src="https://cdn.jsdelivr.net/gh/ascottix/bgdiagram@v1.0.2/dist/bgdiagram.min.js"></script>
 
 If you want to use the themes, also add the following stylesheet links:
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ascottix/bgdiagram@v1.0.1/dist/bgdiagram_themes_base.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ascottix/bgdiagram@v1.0.1/dist/bgdiagram_themes_pastels.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ascottix/bgdiagram@v1.0.2/dist/bgdiagram_themes_base.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ascottix/bgdiagram@v1.0.2/dist/bgdiagram_themes_pastels.min.css">
 
 ## Usage
 
@@ -96,7 +96,12 @@ The diagram builder supports the following options:
 - height: diagram height (default: not set)
 - homeOnLeft: if true, the home/bearoff side is on the left (default: false)
 - swapColors: if true, the colors of the player checkers are swapped
-- compact: if true, the point numbers are not visible
+- compact: if true, the diagram includes only the board
+- turnIndicatorMode:
+  - unset: automatically set to 0 or 2 depending on the value of compact
+  - 0: indicator is a circle placed on the player's home side, outside of the board
+  - 1: indicator is an arrow placed on the player's bar, inside the board (overlaps with the pip count)
+  - 2: indicator is an arrow placed on the player's cube side, inside the board
 
 Width and height can be numbers (e.g. 500) or strings (e.g. '100%'). It is often better to leave them unset and use CSS to control the size of the SVG element.
 

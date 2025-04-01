@@ -82,7 +82,7 @@ function BgDiagramBuilder(options) {
         else if (pos % 25 == 0) {
             // Bar
             edge = pos ? -1 : +1;
-            cy0 -= CheckerRadius;
+            cy0 -= CheckerRadius * 1.5;
         } else {
             pos = getPointPosition(pos);
 
@@ -327,23 +327,31 @@ function BgDiagramBuilder(options) {
     // Add a player score
     function addScore(player, score) {
         const x = centerCubeSide;
-        const y = player * (pointHeight + CheckerSize * 0.2);
+        const y = player * (pointHeight + CheckerSize * 0.1);
 
         addText(x, y, score, `${getPlayerClass(player)} score${(score.length > 3) ? ' small' : ''}`);
     }
 
     // Add the pips count
     function addPipsCount(player, count) {
-        addText(0, player * (pointHeight + CheckerSize * 0.2), count, `pipcount ${getPlayerClass(player)}`);
+        addText(0, player * (pointHeight + CheckerSize * 0.1), count, `pipcount ${getPlayerClass(player)}`);
     }
 
     // Add an indicator to show which player is to play
     function addPlayerOnTurnIndicator(player, mode) {
         const r = CheckerSize / 5;
-        const x = mode ? 0 : centerBearoffSide;
-        const y = player * (mode ? pointHeight + CheckerSize * 0.1 : boardHeight / 2 + BorderWidth * 2 + r);
+        const ModeOffsetX = [centerBearoffSide, 0, centerCubeSide];
+        const ModeOffsetY = [boardHeight / 2 + BorderWidth * 2 + r,  pointHeight + CheckerSize * 0.09, CheckerSize * 3];
+        const x = ModeOffsetX[mode || 0];
+        const y = player * ModeOffsetY[mode || 0];
 
-        addSvg(`<circle cx="${x}" cy="${y}" r="${r}" class="${bem('checker', 'turn ' + getPlayerClass(player))}" />`);
+        if (mode) {
+            const ArrowHalfSize = CheckerSize * 0.4;
+            const dir = options.homeOnLeft ? -1 : +1;
+            drawArrow(x - dir * ArrowHalfSize, y, x + dir * ArrowHalfSize, y, getPlayerClass(player));
+        } else {
+            addSvg(`<circle cx="${x}" cy="${y}" r="${r}" class="${bem('checker', 'turn ' + getPlayerClass(player))}" />`);
+        }
     }
 
     function getUsedCssStyles() {
@@ -459,14 +467,15 @@ export class BgDiagram {
 
         // Turn
         const player = token[3];
+        const turnIndicatorMode = options.turnIndicatorMode == null ? (options.compact ? 2 : 0) : options.turnIndicatorMode;
 
-        bgb.addPlayerOnTurnIndicator(player, options.compact ? 1 : 0);
+        bgb.addPlayerOnTurnIndicator(player, turnIndicatorMode);
         !options.compact && bgb.addPointNumbers(player);
 
         // Match information
         const matchLength = token[8];
 
-        if (matchLength > 0 && !options.compact) {
+        if (matchLength > 0) {
             const scoreWhite = options.scoreAsAway ? `${matchLength - token[5]}a` : `${token[5]}⧸${matchLength}`;
             const scoreBlack = options.scoreAsAway ? `${matchLength - token[6]}a` : `${token[6]}⧸${matchLength}`;
             bgb.addScore(White, scoreWhite);
@@ -480,7 +489,7 @@ export class BgDiagram {
         if (matchLength > 0 && token[7]) {
             bgb.addCrawfordIndicator();
         } else {
-            bgb.addCube(cubePosition, 1 << cubeValue, options.compact ? 1 : 0);
+            bgb.addCube(cubePosition, 1 << cubeValue, matchLength == 0 ? 1 : 0);
         }
 
         // Annotation support functions
@@ -600,8 +609,8 @@ export class BgDiagram {
         }
 
         // Pips count
-        !options.compact && bgb.addPipsCount(White, pips[White]);
-        !options.compact && bgb.addPipsCount(Black, checkers[Black] * 25 - pips[Black]);
+        bgb.addPipsCount(White, pips[White]);
+        bgb.addPipsCount(Black, checkers[Black] * 25 - pips[Black]);
 
         // Return SVG
         return bgb.close();
