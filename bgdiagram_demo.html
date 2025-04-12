@@ -295,11 +295,14 @@
         document.addEventListener('DOMContentLoaded', () => {
             positionChanged();
 
+            // Used for testing
             document.getElementById('board').addEventListener('click', (event) => {
                 const target = event.target;
                 const pt = target.getAttribute('data-pt');
-                const [point, height] = pt.split(':').map(Number);
-                console.log(point, height);
+                if(pt) {
+                    const [point, height] = pt.split(':').map(Number);
+                    console.log(point, height);
+                }
             });
         });
     </script>

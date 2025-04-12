@@ -341,7 +341,7 @@ function BgDiagramBuilder(options) {
     function addPlayerOnTurnIndicator(player, mode) {
         const r = CheckerSize / 5;
         const ModeOffsetX = [centerBearoffSide, 0, centerCubeSide];
-        const ModeOffsetY = [boardHeight / 2 + BorderWidth * 2 + r,  pointHeight + CheckerSize * 0.09, CheckerSize * 3];
+        const ModeOffsetY = [boardHeight / 2 + BorderWidth * 2 + r, pointHeight + CheckerSize * 0.09, CheckerSize * 3];
         const x = ModeOffsetX[mode || 0];
         const y = player * ModeOffsetY[mode || 0];
 
@@ -380,7 +380,7 @@ function BgDiagramBuilder(options) {
         // Class names
         const classes = options.classNames || [];
 
-        attrs.push(`class="${classes.join(' ')}"`);
+        classes.length && attrs.push(`class="${classes.join(' ')}"`);
 
         // Clear and reinitialize the SVG buffer
         svg.length = 0;
@@ -422,10 +422,26 @@ function BgDiagramBuilder(options) {
 }
 
 export class BgDiagram {
+    // Create a new builder
     static newBuilder(options) {
         return BgDiagramBuilder(options);
     }
 
+    // Return a regex to check if a string looks like a valid XGID with extended annotation syntax
+    static getIsValidXgidRegEx() {
+        const Point = '\\d+(\\.\\d+)?,\\d+(\\.\\d+)?';
+        const Move = '(\\d+|bar)\\/(\\d+|off)(\\*|\\([2-4]\\))?';
+        const MoveList = `${Move}(,${Move})*[!?]*`;
+        const XGID = 'XGID=[-a-oA-O]{26}:\\d+:-?[01]:-?1:(00|[DBR]|[1-6]{2}):\\d+:\\d+:[0-3]:\\d+:\\d+';
+        const AnnArrow = `[AD]${Point}-${Point}`;
+        const AnnPolygon = `P${Point}(-${Point})*`;
+        const AnnText = `T${Point}-[^:]+`;
+        const RegEx = `^${XGID}(:(${MoveList}|${AnnArrow}|${AnnPolygon}|${AnnText}))*$`;
+
+        return RegEx;
+    }
+
+    // Create a new diagram from an XGID
     static fromXgid(xgid, options) {
         const bgb = options.builder || BgDiagramBuilder(options);
 
@@ -579,7 +595,6 @@ export class BgDiagram {
         const annotations = xgid.split(':').slice(10);
 
         for (const annotation of annotations) {
-            console.log(annotation);
             switch (annotation[0]) {
                 case 'A':
                     handleDrawArrow(annotation);
@@ -591,7 +606,7 @@ export class BgDiagram {
                     handleDrawPolygon(annotation);
                     break;
                 case 'T':
-                    handleDrawText(annotation);
+                    // Handled later
                     break;
                 default:
                     handleMoveList(annotation);
@@ -611,6 +626,14 @@ export class BgDiagram {
         // Pips count
         bgb.addPipsCount(White, pips[White]);
         bgb.addPipsCount(Black, checkers[Black] * 25 - pips[Black]);
+
+        // Text annotations go last
+        for (const annotation of annotations) {
+            if (annotation[0] == 'T') {
+                handleDrawText(annotation);
+                break;
+            }
+        }
 
         // Return SVG
         return bgb.close();
