@@ -455,6 +455,21 @@ export class BgDiagram {
             xgid = xgid.substring(XgidPrefix.length);
         }
 
+        // Get annotations
+        const annotations = xgid.split(':').slice(10);
+
+        // Process option annotations
+        for (const annotation of annotations) {
+            if (annotation[0] == 'O') {
+                const option = annotation[1];
+                const value = annotation.substring(2);
+
+                if (option == 'p') {
+                    options.__hidePipcount = value == '-';
+                }
+            }
+        }
+
         // Tokenize
         const token = xgid.split(':').map(Number);
 
@@ -591,9 +606,7 @@ export class BgDiagram {
             bgb.addText(x, y, parts[1], classAnnotation);
         }
 
-        // Annotations
-        const annotations = xgid.split(':').slice(10);
-
+        // Process draw annotations
         for (const annotation of annotations) {
             switch (annotation[0]) {
                 case 'A':
@@ -605,6 +618,7 @@ export class BgDiagram {
                 case 'P':
                     handleDrawPolygon(annotation);
                     break;
+                case 'O':
                 case 'T':
                     // Handled later
                     break;
@@ -624,8 +638,10 @@ export class BgDiagram {
         }
 
         // Pips count
-        bgb.addPipsCount(White, pips[White]);
-        bgb.addPipsCount(Black, checkers[Black] * 25 - pips[Black]);
+        if (!options.__hidePipcount) {
+            bgb.addPipsCount(White, pips[White]);
+            bgb.addPipsCount(Black, checkers[Black] * 25 - pips[Black]);
+        }
 
         // Text annotations go last
         for (const annotation of annotations) {
