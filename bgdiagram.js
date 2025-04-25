@@ -443,8 +443,6 @@ export class BgDiagram {
 
     // Create a new diagram from an XGID
     static fromXgid(xgid, options) {
-        xgid = "XGID=---ABCD------------bbbbb--:0:0:1:00:0:0:0:0:6:P6,0-6,3-3,0:P19,0-19,1-23,1-23,0:A5,4-5,3:A21,3-21,2:T0,4.5-Marked point x 10:T0,3.5-AAA";
-
         const bgb = options.builder || BgDiagramBuilder(options);
 
         const White = bgb.White;
