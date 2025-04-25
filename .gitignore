@@ -1,0 +1,8 @@
+# VS Code config
+.vscode/
+
+# Mac OS metadata
+.DS_Store
+
+# Scripts
+build.sh

@@ -459,13 +459,20 @@ export class BgDiagram {
         const annotations = xgid.split(':').slice(10);
 
         // Process option annotations
+        const params = {}
+
         for (const annotation of annotations) {
             if (annotation[0] == 'O') {
-                const option = annotation[1];
+                const param = annotation[1];
                 const value = annotation.substring(2);
 
-                if (option == 'p') {
-                    options.__hidePipcount = value == '-';
+                switch (param) {
+                    case 'n':
+                        params.hideNumbers = value == '-';
+                        break;
+                    case 'p':
+                        params.hidePipcount = value == '-';
+                        break;
                 }
             }
         }
@@ -501,7 +508,7 @@ export class BgDiagram {
         const turnIndicatorMode = options.turnIndicatorMode == null ? (options.compact ? 2 : 0) : options.turnIndicatorMode;
 
         bgb.addPlayerOnTurnIndicator(player, turnIndicatorMode);
-        !options.compact && bgb.addPointNumbers(player);
+        !options.compact && !params.hideNumbers && bgb.addPointNumbers(player);
 
         // Match information
         const matchLength = token[8];
@@ -638,7 +645,7 @@ export class BgDiagram {
         }
 
         // Pips count
-        if (!options.__hidePipcount) {
+        if (!params.hidePipcount) {
             bgb.addPipsCount(White, pips[White]);
             bgb.addPipsCount(Black, checkers[Black] * 25 - pips[Black]);
         }
